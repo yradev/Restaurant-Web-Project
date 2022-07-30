@@ -1,0 +1,40 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Berkshire+Swash&display=swap');
+nav ul li a{
+    text-decoration: none;
+    display: inline-block;
+    padding: 0 10px;
+    font-size: 20px;
+    font-weight: bold;
+    color: rgb(214, 116, 114)
+}
+
+nav ul{
+    padding: 10px 0;
+}
+
+.login-header{
+    text-align: right;
+}
+
+.navigation{
+    border-color: #0a53be;
+    border-style: none none solid none;
+    border-width: 1px;
+}
+
+.restaurant-name{
+    font-family: 'Berkshire Swash', cursive;
+    text-align: center;
+    color: black;
+    font-size: xxx-large;
+    padding-top: 50px;
+    font-weight: bold;
+}
+
+.restaurant-description{
+    text-align: center;
+    color: black;
+    font-size: medium;
+    font-weight: bold;
+}

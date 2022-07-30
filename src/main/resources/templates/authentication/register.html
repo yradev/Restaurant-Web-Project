@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/commons::head"></head>
+
+<body>
+<header th:replace="fragments/commons::header"></header>
+
+<main>
+    <form class="mx-auto w-25 bg-blur login-form"
+          th:method="post"
+          th:action="@{/auth/register}">
+        <p class="page-name">Register</p>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="username" name="username">
+            <label for="username">Username</label>
+        </div>
+        <div class="form-floating mb-2">
+            <input type="password" class="form-control" id="password" name="password">
+            <label for="password">Password</label>
+        </div>
+        <div class="form-floating mb-2">
+            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword">
+            <label for="confirmPassword">Confirm Password</label>
+        </div>
+        <div class="form-floating mb-2">
+            <input type="email" class="form-control" id="email" name="email">
+            <label for="email">Email address</label>
+        </div>
+        <div class="form-floating mb-2">
+            <input type="text" class="form-control" id="address" name="address">
+            <label for="address">Address (optional)</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</main>
+<footer th:replace="fragments/commons::footer"></footer>
+
+</body>
+</html>

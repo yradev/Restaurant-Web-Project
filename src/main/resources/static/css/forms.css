@@ -1,0 +1,14 @@
+.login-form{
+    padding: 30px;
+    color: black;
+    font-size: large;
+    background-color:rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.page-name{
+    text-align: center;
+    font-size: xx-large;
+    color: black;
+    padding-bottom: 20px;
+}
