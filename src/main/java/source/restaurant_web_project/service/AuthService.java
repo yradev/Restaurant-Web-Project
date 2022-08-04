@@ -13,7 +13,7 @@ public interface AuthService extends UserDetailsService {
     @Override
     UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 
-    boolean register(UserRegisterDTO userRegisterDTO);
+    void register(UserRegisterDTO userRegisterDTO);
 
 
     User findUserByEmail(String email);
@@ -25,4 +25,8 @@ public interface AuthService extends UserDetailsService {
     String getMessageWithToken(User user, HttpServletRequest request) throws MalformedURLException;
 
     boolean checkTokenExist(String email);
+
+    boolean checkUserExist(String checkValue, String checkByField);
+
+    boolean verifyPassword(String email, String password);
 }

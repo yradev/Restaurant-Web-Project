@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -11,7 +12,7 @@ import source.restaurant_web_project.model.dto.UserRegisterDTO;
 import source.restaurant_web_project.model.entity.User;
 import source.restaurant_web_project.service.AuthService;
 import source.restaurant_web_project.util.EmailSender;
-import source.restaurant_web_project.util.Validator;
+import source.restaurant_web_project.util.DataValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -23,13 +24,13 @@ public class AuthController {
 
     private final AuthService authService;
     private final EmailSender emailSender;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final DataValidator dataValidator;
 
     @Autowired
-    public AuthController(HttpServletRequest httpServletRequest, AuthService authService, EmailSender emailSender, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public AuthController(AuthService authService, EmailSender emailSender, DataValidator dataValidator) {
         this.authService = authService;
         this.emailSender = emailSender;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.dataValidator = dataValidator;
     }
 
 //   #########################
@@ -38,7 +39,7 @@ public class AuthController {
 
     @GetMapping(value = "login")
     public String login(){
-        if(Validator.isUserLogged()){
+        if(dataValidator.isUserLogged()){
             return "redirect:/";
         }
 
@@ -58,6 +59,7 @@ public class AuthController {
 
     @GetMapping("password-reset")
     public String getForgotPassword(){
+
         return "authentication/password-reset-email";
     }
 
@@ -79,7 +81,7 @@ public class AuthController {
         return "redirect:/auth/password-reset";
     }
 
-    @GetMapping("password-reset/verifiy")
+    @GetMapping("password-reset/verify")
     public ModelAndView tokenVerifyResetPassword(@RequestParam String token, @RequestParam String email, ModelAndView modelAndView,RedirectAttributes redirectAttributes){
         User user = authService.findUserByEmail(email);
         if(user==null || !authService.verifyToken(token,email)){
@@ -95,17 +97,24 @@ public class AuthController {
         return modelAndView;
     }
 
-    @PostMapping("password-reset/verifiy/authentication")
-    public String test(@RequestParam String token,@RequestParam String email, @RequestParam String password, @RequestParam String confirmPassword, RedirectAttributes redirectAttributes){
+    @PostMapping("password-reset/verify/authentication")
+    public String getVerifyForgotPassword(@RequestParam String token, @RequestParam String email, @RequestParam String password, @RequestParam String confirmPassword, RedirectAttributes redirectAttributes){
+
+
 
         if(!password.equals(confirmPassword)){
             redirectAttributes.addFlashAttribute("confirmPasswordError",true);
-            return "redirect:/auth/password-reset/verifiy?token="+ token + "&email=" + email;
+            return "redirect:/auth/password-reset/verify?token="+ token + "&email=" + email;
         }
 
         if(password.length()<5){
             redirectAttributes.addFlashAttribute("passwordLengthError",true);
-            return "redirect:/auth/password-reset/verifiy?token="+ token + "&email=" + email;
+            return "redirect:/auth/password-reset/verify?token="+ token + "&email=" + email;
+        }
+
+        if(authService.verifyPassword(email,password)){
+            redirectAttributes.addFlashAttribute("passwordEquals",true);
+            return "redirect:/auth/password-reset/verify?token="+ token + "&email=" + email;
         }
 
         authService.restorePassword(password,email);
@@ -122,7 +131,7 @@ public class AuthController {
     @GetMapping("register")
     public String getRegister(){
 
-        if(Validator.isUserLogged()){
+        if(dataValidator.isUserLogged()){
             return "redirect:/";
         }
 
@@ -136,9 +145,33 @@ public class AuthController {
         return new UserRegisterDTO();
     }
 
-    @PostMapping("/auth/register")
+    @PostMapping("/register/authentication")
     public String postRegister(@Valid UserRegisterDTO userRegisterDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes){
-        return null;
+        if(!userRegisterDTO.getPassword().equals(userRegisterDTO.getConfirmPassword())){
+            FieldError fieldError = new FieldError("confirmPassword","confirmPassword","Passwords are not equal!");
+            bindingResult.addError(fieldError);
+        }
+
+        if(authService.checkUserExist(userRegisterDTO.getEmail(),"email")){
+          FieldError fieldError = new FieldError("userExist","email","This email is used!");
+          bindingResult.addError(fieldError);
+        }
+
+        if(authService.checkUserExist(userRegisterDTO.getUsername(),"username")){
+            FieldError fieldError = new FieldError("userExist","username","This username is used!");
+            bindingResult.addError(fieldError);
+        }
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("userRegisterDTO", userRegisterDTO);
+            redirectAttributes.addFlashAttribute(
+                    "org.springframework.validation.BindingResult.userRegisterDTO", bindingResult);
+            return "redirect:/auth/register";
+        }
+
+        authService.register(userRegisterDTO);
+        redirectAttributes.addFlashAttribute("userRegistered",true);
+        return "redirect:/auth/login";
     }
 
 }

@@ -1,34 +1,22 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Berkshire+Swash&display=swap');
-nav ul li a{
-    text-decoration: none;
-    display: inline-block;
-    padding: 0 10px;
-    font-size: 20px;
-    font-weight: bold;
-    color: rgb(214, 116, 114)
-}
-
 nav ul{
     padding: 10px 0;
 }
 
-.login-header{
-    text-align: right;
+.navigation{
+    border-style: solid solid none solid;
+    border-width: 1px;
+    border-radius: 3px;
+    padding-right: 1%;
 }
 
-.navigation{
-    border-color: #0a53be;
-    border-style: none none solid none;
-    border-width: 1px;
-}
 
 .restaurant-name{
     font-family: 'Berkshire Swash', cursive;
     text-align: center;
     color: black;
     font-size: xxx-large;
-    padding-top: 50px;
     font-weight: bold;
 }
 
@@ -38,3 +26,28 @@ nav ul{
     font-size: medium;
     font-weight: bold;
 }
+
+/*.dropdown-menu li a{*/
+/*    padding: 10px 10px;*/
+/*}*/
+
+.dropdown-menu{
+    width: 10px;
+}
+
+.navigation-item{
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    font-weight: bold;
+    color: rgb(214, 116, 114)
+}
+
+.profile{
+    text-align: right;
+    color: black;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+

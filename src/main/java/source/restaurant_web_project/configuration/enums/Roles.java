@@ -1,5 +1,5 @@
 package source.restaurant_web_project.configuration.enums;
 
 public enum Roles {
-    USER,ADMIN
+    ROLE_USER,ROLE_STAFF,ROLE_OWNER
 }

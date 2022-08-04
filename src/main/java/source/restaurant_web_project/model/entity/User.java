@@ -16,8 +16,8 @@ public class User extends BaseEntity {
     @Column(unique = true)
     private String email;
 
-    @Column(columnDefinition = "TEXT")
-    private String address;
+    @OneToOne(targetEntity = Address.class)
+    private Address address;
 
     @ManyToMany(targetEntity = Role.class, fetch = FetchType.EAGER)
     @JoinTable(
@@ -101,11 +101,11 @@ public class User extends BaseEntity {
         this.roles = roles;
     }
 
-    public String getAddress() {
+    public Address getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(Address address) {
         this.address = address;
     }
 }

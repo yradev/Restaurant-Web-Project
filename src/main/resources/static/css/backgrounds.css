@@ -1,3 +1,6 @@
+/*all background images we have got from https://www.pngaaa.com/*/
+
+
 @import url('https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Courgette&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
@@ -31,10 +34,38 @@
 
 .top-items{
     background-image: url(../files/top-items.png);
-    height: 400px; /* You must set a specified height */
+    height: 100%; /* You must set a specified height */
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 80% 80%;
+    background-size: 90% 90%;
+    text-align: center;
+}
+
+header {
+    background-image: url(../files/header.png);
+    height: 100%; /* You must set a specified height */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 40% 100%;
+    text-align: center;
+}
+
+.form-background {
+    background-image: url(../files/header.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 40% 100%;
+    text-align: center;
+}
+
+
+.list-field{
+    padding-top: 10px;
+    background-image: url(../files/list.png);
+    height: 100%; /* You must set a specified height */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 50% 100%;
     text-align: center;
 }
 

@@ -1,19 +1,14 @@
 package source.restaurant_web_project.model.dto;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 public class UserRegisterDTO {
-    @NotNull(message = "Username cannot be empty!")
+    @Size(min=3, message = "Username must be at least 3 symbols!")
     private String username;
     @Size(min = 5, message = "Password must be at least 5 symbols!")
     private String password;
-    @Email
-    @NotNull(message = "Email cannot be empty!")
+    private String confirmPassword;
     private String email;
-
-    private String address;
 
     public UserRegisterDTO(){}
 
@@ -41,11 +36,11 @@ public class UserRegisterDTO {
         this.email = email;
     }
 
-    public String getAddress() {
-        return address;
+    public String getConfirmPassword() {
+        return confirmPassword;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
     }
 }
