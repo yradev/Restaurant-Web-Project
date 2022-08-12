@@ -1,9 +1,9 @@
-package source.restaurant_web_project.model.dto;
+package source.restaurant_web_project.model.dto.authentication;
 
 import javax.validation.constraints.*;
 
 public class UserRegisterDTO {
-    @Size(min=3, message = "Username must be at least 3 symbols!")
+    @Size(min=3, max=10, message = "Username must be between 3 and 10 symbols!")
     private String username;
     @Size(min = 5, message = "Password must be at least 5 symbols!")
     private String password;

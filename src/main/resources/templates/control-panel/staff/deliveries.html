@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/commons::head"></head>
+
+<body>
+<header th:replace="fragments/commons::header"></header>
+
+<main>
+    <div class="container-fluid justify-content-center d-flex h-75">
+        <div class="row w-100">
+            <div class="col-xs col-lg-5 list-field w-50">
+                <div class="container-fluid h-100">
+                    <div class="row">
+                        <p class="auth-header" style="padding: 10px 0">History of Deliveries</p>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="col-xs col-lg-6 list-field w-50">
+                <div class="container-fluid h-100" style="padding: 0 20%;">
+                    <div class="row">
+                        <p class="auth-header" style="padding: 10px 0">Active Deliveries</p>
+                    </div>
+
+                    <div th:each="delivery : ${activeDeliveries}">
+                        <div th:text="|${delivery.receiveTime} - Address ${delivery.deliveryAddress} From ${delivery.deliverUsername}|"></div>
+                        <div th:text="|Total price ${delivery.totalPrice} BGN|"></div>
+                        <button type="button" class="btn btn-info">View ittems</button>
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="${delivery.deliveryStatus}"></button>
+                            <ul class="dropdown-menu">
+                                <li th:each="deliveryStatus : ${delivery.deliveryStatus.values()}"><a class="dropdown-item" href="#" th:text="${delivery.deliveryStatus}"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>>
+</main>
+<footer th:replace="fragments/commons::footer"></footer>
+
+</body>
+</html>

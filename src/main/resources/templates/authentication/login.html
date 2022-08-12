@@ -12,7 +12,7 @@
         <form class="mx-auto bg-blur auth-form"
           th:method="post"
           th:action="@{/auth/login}">
-        <p class="page-name">Login</p>
+        <p class="auth-header">Login</p>
 
             <div>
             <p th:unless="${wrongInput} or ${userRegistered} or ${passwordChanged}" class="alert alert-primary">

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec='http://www.thymeleaf.org/extras/spring-security'>
+      xmlns:sec='http://www.thymeleaf.org/extras/spring-security' xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,62 +22,104 @@
                     <nav style="float: left">
                         <!-- Navigation -->
                         <ul class="nav col-12 col-md-auto mb-2 mb-md-0 ">
-                            <li ><a href="#" class="nav-link px-2  navigation-item">Home</a></li>
-                            <li><a href="#" class="nav-link px-2 navigation-item">Menu</a></li>
-                            <li><a href="#" class="nav-link px-2 navigation-item">Galery</a></li>
+                            <li ><a href="/" class="nav-link px-2  navigation-item">Home</a></li>
+                            <li><a href="/menu" class="nav-link px-2 navigation-item">Menu</a></li>
+                            <li><a href="/reservation" class="nav-link px-2 navigation-item">Reservation</a></li>
                             <li><a href="#" class="nav-link px-2 navigation-item">About us</a></li>
                         </ul>
                         <!-- ------------------------------- -->
                     </nav>
+
+                    <div style="float: right">
+                        <div class="delivery-bag-header">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="green" class="bi bi-cart-fill" viewBox="0 0 16 16">
+                                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                                    </svg> Delivery Bag
+                                </button>
+                                <div class="dropdown-menu" style="width: 300%; padding-left: 10px">
+                                    <div>
+                                        <div style="display: inline-block; width: 35%">name</div>
+                                        <div style="display: inline-block; width: 30%; text-align: center; padding-left: 10%;">item-count</div>
+                                        <div style="display: inline-block; width: 30%; text-align: right;">Price</div>
+                                        <div style="display: inline-block; width: 30%; text-align: right;">Total price</div>
+                                        <hr style="padding-left: 0" class="dropdown-divider">
+                                    </div>
+                                    <div th:if="${itemsBag.isEmpty()}">Delivery bag is empty!</div>
+                                    <div th:unless="${itemsBag.isEmpty()}" th:each="e : ${itemsBag}">
+                                    <div style="display: inline-block; width: 40%" th:text="${e.name}"></div>
+                                        <div style="float: right; width: 55%">
+                                            <div style="display: inline-block;" th:text="${e.countInBag}"></div>
+                                            <a th:href="@{/menu/items/delete/bag/{itemName}(itemName=${e.name})}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-square" viewBox="0 0 16 16">
+                                                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                                                    <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/></svg>
+                                            </a>
+                                            <a th:href="@{/menu/items/add/bag/{itemName}(itemName=${e.name})}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square" viewBox="0 0 16 16">
+                                                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/></svg>
+                                            </a>
+                                            <div style="display: inline-block" th:text="|${e.price} BGN|"></div>
+                                            <div th:text="|${e.totalPrice} BGN|" style="display: inline-block;"></div>
+
+                                        </div>
+                                    </div>
+                                    <p style="display: inline-block">Total delivery price:</p>
+                                    <div style="display: inline-block; margin-left: 5%; margin-top: 5%;" th:text="|${totalPriceOnItemsInBag} BGN|"></div>
+                                    <button th:if="${itemsBag.isEmpty()}" type="button" class="btn btn-secondary btn-sm" style="float: right;margin-top: 3%;margin-right: 3%;">Next step</button>
+                                    <a th:href="@{/delivery/new}"><button th:unless="${itemsBag.isEmpty()}" type="button" class="btn btn-primary btn-sm" style="float: right;margin-top: 3%;margin-right: 3%;">Next step</button></a>
+                                </div>
+                            </div>
+                        </div>
                     <div sec:authorize="isAnonymous()" style="float: right">
                         <a href="/auth/login" class="btn btn-light text-dark me-2">Login</a>
                         <a href="/auth/register" class="btn btn-warning">Sign-up</a>
                     </div>
 
-                    <div sec:authorize="isAuthenticated()" class="profile">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="black" class="bi bi-person" viewBox="0 0 16 16">
-                            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
-                        </svg>
-                        <span sec:authentication="name"></span>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                Control Panel
-                            </button>
-                            <ul class="dropdown-menu">
+                        <div sec:authorize="isAuthenticated()" class="profile">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="black" class="bi bi-person" viewBox="0 0 16 16">
+                                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                            </svg>
+                            <span sec:authentication="name"></span>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Control Panel
+                                </button>
+                                <ul class="dropdown-menu">
                                 <h6 class="dropdown-header">Profile</h6>
                                 <li><a class="dropdown-item" href="/user/settings">Settings</a></li>
                                 <li><a class="dropdown-item" href="#">Reservations</a></li>
-                                <li><a class="dropdown-item" href="#">Deliveries</a></li>
-                                <li><a class="dropdown-item" href="#">Reviews</a></li>
+                                <li><a class="dropdown-item" href="/user/deliveries">Deliveries</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <div sec:authorize="hasRole('ROLE_USER')">
                                     <h6 class="dropdown-header">Staff</h6>
-                                    <li><a class="dropdown-item" href="#">Deliveries</a></li>
+                                    <li><a class="dropdown-item" href="/staff/deliveries">Deliveries</a></li>
                                     <li><a class="dropdown-item" href="#">Reservations</a></li>
-                                    <li><a class="dropdown-item" href="#">Reviews</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                 </div>
                                 <div sec:authorize="hasRole('ROLE_OWNER')">
                                     <h6 class="dropdown-header">Core</h6>
                                     <li><a class="dropdown-item" href="#">Core configuration</a></li>
                                     <li><a class="dropdown-item" href="#">User control</a></li>
+                                    <li><a class="dropdown-item" href="/owner/menu">Menu control</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                 </div>
                                 <li><a class="dropdown-item" href="/auth/logout">Logout</a></li>
-
                             </ul>
+                            </div>
                         </div>
-
-                </div>
-            </div>
-            </div>
-        </div>
-            <div class="row">
-                <div class="col-xs col-lg-12 restaurant-header">
-                    <p class="restaurant-name">My Restaurant</p>
-                    <p class="restaurant-description">MyDescription</p>
                     </div>
                 </div>
+            </div>
+        </div>
+    <!--            <div class="row">-->
+    <!--                <div class="col-xs col-lg-12 restaurant-header">-->
+    <!--                    <p class="restaurant-name">My Restaurant</p>-->
+    <!--                    <p class="restaurant-description">MyDescription</p>-->
+    <!--                    </div>-->
+<!--                </div>-->
     </header>
     <footer>
         <div class="container-fluid">
@@ -87,6 +129,8 @@
                 </div>
             </div>
         </div>
+
+        <script src="/js/main.js"></script>
     </footer>
 </body>
 </html>

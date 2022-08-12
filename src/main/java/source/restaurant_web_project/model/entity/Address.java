@@ -4,15 +4,13 @@ import org.hibernate.annotations.Columns;
 import source.restaurant_web_project.model.entity.User;
 import source.restaurant_web_project.model.entity.superClass.BaseEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "addresses")
 public class Address extends BaseEntity {
 
+    private String name;
     private String city;
     private String village;
     private String street;
@@ -21,8 +19,11 @@ public class Address extends BaseEntity {
     private int floor;
     private int apartmentNumber;
 
-    @OneToOne(targetEntity = User.class, mappedBy = "address")
+    @ManyToOne(targetEntity = User.class)
     private User user;
+
+    @OneToOne
+    private Delivery delivery;
 
     public Address(){}
 
@@ -88,5 +89,13 @@ public class Address extends BaseEntity {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

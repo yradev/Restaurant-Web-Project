@@ -5,33 +5,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Courgette&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
 
-.gradient-img-background:before {
-    content: '';
-    position:absolute;
-    top:0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-            45deg,
-            rgba(53, 52, 52, 0.7),
-            rgba(66, 66, 66, 0.7) 100%
-    );
-}
-
-
-.welcome{
-    font-size:50px;
-    font-family: 'Lobster', cursive;
-}
-
-
-.welcome:nth-child(2){
-    font-size: medium;
-    font-family:  Open Sans, sans-serif;;
-}
-
-
 .top-items{
     background-image: url(../files/top-items.png);
     height: 100%; /* You must set a specified height */
@@ -41,14 +14,14 @@
     text-align: center;
 }
 
-header {
-    background-image: url(../files/header.png);
-    height: 100%; /* You must set a specified height */
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 40% 100%;
-    text-align: center;
-}
+/*header {*/
+/*    background-image: url(../files/header.png);*/
+/*    height: 100%; !* You must set a specified height *!*/
+/*    background-repeat: no-repeat;*/
+/*    background-position: center;*/
+/*    background-size: 40% 100%;*/
+/*    text-align: center;*/
+/*}*/
 
 .form-background {
     background-image: url(../files/header.png);
@@ -65,25 +38,27 @@ header {
     height: 100%; /* You must set a specified height */
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 50% 100%;
+    background-size: 70% 100%;
     text-align: center;
 }
 
-.top-items p:first-child{
-    color: black;
-    font-size: xx-large;
-    font-weight: bold;
-    padding-top: 100px;
-    padding-bottom: 20px;
+.items-header{
+    padding-top: 10px;
+    background-image: url(../files/items-header.png);
+    height: 100%; /* You must set a specified height */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 70% 100%;
 }
 
-.top-items p:not(:first-child){
-    color: black;
-    font-size: large;
-    font-weight: bold;
-    padding-top: 2px;
+.menu-items-background{
+    padding-top: 1px;
+    background-image: url(../files/items.png);
+    height: 100%; /* You must set a specified height */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 66% 100%;
 }
-
 
 .status-background{
     background-image: url(../files/status-image.png);
@@ -112,40 +87,3 @@ header {
     padding-top: 150px;
 
 }
-
-.text-rotate{
-    transform: rotate(-15deg);
-}
-
-.text-rotate p:first-child{
-    padding-bottom: 20px;
-}
-.text-rotate p:not(:first-child) {
-    padding-top: 20px;
-}
-
-.restaurant-status:first-child{
-    padding-top: 32px;
-}
-
-.restaurant-status{
-    color: rgb(12, 223, 30);
-    font-size: large;
-    font-weight: bold;
-    padding-top: 10px;
-}
-
-.working-time{
-    color: rgb(52, 118, 218);
-    font-size: large;
-    font-weight: bold;
-    padding-top: 20px;
-}
-
-.location{
-    color: rgb(182, 218, 52);
-    font-size: large;
-    font-weight: bold;
-    padding-top: 20px;
-}
-

@@ -1,14 +1,13 @@
 package source.restaurant_web_project.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import source.restaurant_web_project.model.dto.UserRegisterDTO;
+import source.restaurant_web_project.model.dto.authentication.UserRegisterDTO;
 import source.restaurant_web_project.model.entity.User;
 import source.restaurant_web_project.service.AuthService;
 import source.restaurant_web_project.util.EmailSender;
@@ -39,9 +38,6 @@ public class AuthController {
 
     @GetMapping(value = "login")
     public String login(){
-        if(dataValidator.isUserLogged()){
-            return "redirect:/";
-        }
 
         return "authentication/login";
     }
@@ -63,7 +59,7 @@ public class AuthController {
         return "authentication/password-reset-email";
     }
 
-    @PostMapping("password-reset/authentication")
+    @PostMapping("password-reset/processing")
     public String postForgotPassword(@RequestParam String email, HttpServletRequest request,RedirectAttributes redirectAttributes) throws MalformedURLException {
         User user = authService.findUserByEmail(email);
         if (user == null) {
@@ -97,7 +93,7 @@ public class AuthController {
         return modelAndView;
     }
 
-    @PostMapping("password-reset/verify/authentication")
+    @PostMapping("password-reset/verify/processing")
     public String getVerifyForgotPassword(@RequestParam String token, @RequestParam String email, @RequestParam String password, @RequestParam String confirmPassword, RedirectAttributes redirectAttributes){
 
 
@@ -131,10 +127,6 @@ public class AuthController {
     @GetMapping("register")
     public String getRegister(){
 
-        if(dataValidator.isUserLogged()){
-            return "redirect:/";
-        }
-
         return "authentication/register";
     }
 
@@ -145,7 +137,7 @@ public class AuthController {
         return new UserRegisterDTO();
     }
 
-    @PostMapping("/register/authentication")
+    @PostMapping("/register/processing")
     public String postRegister(@Valid UserRegisterDTO userRegisterDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes){
         if(!userRegisterDTO.getPassword().equals(userRegisterDTO.getConfirmPassword())){
             FieldError fieldError = new FieldError("confirmPassword","confirmPassword","Passwords are not equal!");

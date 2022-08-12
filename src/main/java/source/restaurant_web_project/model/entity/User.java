@@ -16,8 +16,8 @@ public class User extends BaseEntity {
     @Column(unique = true)
     private String email;
 
-    @OneToOne(targetEntity = Address.class)
-    private Address address;
+    @OneToMany(targetEntity = Address.class,mappedBy = "user")
+    private List<Address>address;
 
     @ManyToMany(targetEntity = Role.class, fetch = FetchType.EAGER)
     @JoinTable(
@@ -31,9 +31,6 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", targetEntity = Reservation.class)
     private Set<Reservation>reservations;
-
-    @OneToMany(mappedBy = "user", targetEntity = Review.class)
-    private Set<Reservation>reviews;
 
     public User(){}
 
@@ -77,14 +74,6 @@ public class User extends BaseEntity {
         this.reservations = reservations;
     }
 
-    public Set<Reservation> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(Set<Reservation> reviews) {
-        this.reviews = reviews;
-    }
-
     public boolean isEnabled() {
         return enabled;
     }
@@ -101,11 +90,11 @@ public class User extends BaseEntity {
         this.roles = roles;
     }
 
-    public Address getAddress() {
+    public List<Address> getAddress() {
         return address;
     }
 
-    public void setAddress(Address address) {
+    public void setAddress(List<Address> address) {
         this.address = address;
     }
 }

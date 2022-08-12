@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec='http://www.thymeleaf.org/extras/spring-security'>
+
+<head th:replace="fragments/commons::head"></head>
+
+<body>
+<header th:replace="fragments/commons::header"></header>
+<main>
+    <div class="container-fluid justify-content-center d-flex list-field" >
+        <div class="row w-50">
+            <div class="col-xs col-lg-12">
+                <div class="menu-items-header">New Delivery</div>
+                <div th:if="${itemsBag.isEmpty()}">Item bag is empty!</div>
+                <div th:unless="${itemsBag.isEmpty()}">
+                    <p>Item bag contains:</p>
+                    <div th:each="item: ${itemsBag}">
+                        <div th:text="|${item.countInBag} x ${item.price} (${item.name}) = ${item.totalPrice} BGN|"></div>
+                    </div>
+                    <div th:text="|Total price of the bag is: ${totalPriceOnItemsInBag} BGN|"></div>
+
+                    <div th:if="${addresses.isEmpty()}">You need to add delivery address! You can do it from profile settings.</div>
+                    <div th:unless="${addresses.isEmpty()}">
+                        <form
+                                th:action="@{/delivery/new/processing}"
+                                th:method="POST">
+
+                            <div class="form-floating input-group mb-2">
+                                <select class="form-select" id="deliveryAddressName" name="deliveryAddressName">
+                                    <option th:each="address : ${addresses}" th:value="${address.name}" th:text="${address.name}">
+                                    </option>
+                                </select>
+                                <label for="deliveryAddressName">Delivery address</label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Submit delivery</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="fragments/commons::footer"></footer>
+
+</body>
+</html>

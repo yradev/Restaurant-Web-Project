@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import source.restaurant_web_project.model.dto.UserRegisterDTO;
+import source.restaurant_web_project.model.dto.authentication.UserRegisterDTO;
 import source.restaurant_web_project.model.entity.Address;
 import source.restaurant_web_project.model.entity.Role;
 import source.restaurant_web_project.model.entity.Token;
@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -63,11 +64,9 @@ public class AuthServiceIMPL implements AuthService {
 
     @Override
     public void register(UserRegisterDTO userRegisterDTO) {
-        Address address = new Address();
-        addressRepository.save(address);
 
         User user = modelMapper.map(userRegisterDTO,User.class);
-        user.setAddress(address);
+        user.setAddress(new ArrayList<>());
         Role role = roleRepository.getRoleByName("ROLE_USER");
         List<Role> roles = List.of(role);
         String password = bCryptPasswordEncoder.encode(userRegisterDTO.getPassword());

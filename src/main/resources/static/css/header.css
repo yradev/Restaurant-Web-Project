@@ -48,6 +48,18 @@ nav ul{
     color: black;
     font-size: 25px;
     font-weight: bold;
+    float: right;
 }
 
+.delivery-bag-header{
+    float: left;
+    padding-right: 20px;
+    font-size: x-large;
+}
+
+.delivery-bag-itemCount{
+    position: absolute;
+    right: 20%;
+    top: 15%;
+}
 

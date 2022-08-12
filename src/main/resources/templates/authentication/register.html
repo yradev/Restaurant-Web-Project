@@ -11,9 +11,9 @@
         <div class="col-xs-20 col-lg-12">
             <form class="mx-auto bg-blur auth-form"
           th:method="post"
-          th:action="@{/auth/register/authentication}"
+          th:action="@{/auth/register/processing}"
           th:object="${userRegisterDTO}">
-        <p class="page-name">Register</p>
+        <p class="auth-header">Register</p>
         <div class="form-floating mb-2">
             <input type="text" class="form-control" id="username" name="username" th:field="*{username}" th:errorclass="is-invalid" required>
             <label for="username">Username</label>

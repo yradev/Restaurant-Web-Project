@@ -14,8 +14,10 @@ public class Item extends BaseEntity {
     @Column(columnDefinition = "text")
     private String description;
     private BigDecimal price;
+    private long position;
+    private long countInBag;
 
-    @ManyToOne(targetEntity = Category.class)
+    @ManyToOne(targetEntity = Category.class, fetch = FetchType.EAGER)
     private Category category;
 
     @ManyToMany(mappedBy = "items",targetEntity = Delivery.class)
@@ -61,5 +63,22 @@ public class Item extends BaseEntity {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public long getPosition() {
+        return position;
+    }
+
+    public void setPosition(long position) {
+        this.position = position;
+    }
+
+
+    public long getCountInBag() {
+        return countInBag;
+    }
+
+    public void setCountInBag(long countInBag) {
+        this.countInBag = countInBag;
     }
 }

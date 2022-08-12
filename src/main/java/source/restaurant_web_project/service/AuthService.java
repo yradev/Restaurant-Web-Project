@@ -3,7 +3,7 @@ package source.restaurant_web_project.service;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import source.restaurant_web_project.model.dto.UserRegisterDTO;
+import source.restaurant_web_project.model.dto.authentication.UserRegisterDTO;
 import source.restaurant_web_project.model.entity.User;
 
 import javax.servlet.http.HttpServletRequest;

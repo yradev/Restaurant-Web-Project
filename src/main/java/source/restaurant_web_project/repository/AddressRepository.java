@@ -6,4 +6,5 @@ import source.restaurant_web_project.model.entity.Address;
 
 @Repository
 public interface AddressRepository extends JpaRepository<Address,Long> {
+    Address findAddressById(Long id);
 }

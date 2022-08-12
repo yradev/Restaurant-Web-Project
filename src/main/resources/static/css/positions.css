@@ -1,10 +1,9 @@
 /* Container holding the image and the text */
-.container {
+.container,.container-fluid {
     position: relative;
     text-align: center;
-    color: white;
-  }
-  
+ }
+
   /* Bottom left text */
   .bottom-left {
     position: absolute;
@@ -38,6 +37,13 @@
   .centered {
     position: absolute;
     top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .bottom-centered{
+    position: absolute;
+    bottom: 8px;
     left: 50%;
     transform: translate(-50%, -50%);
   }

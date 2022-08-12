@@ -2,10 +2,8 @@ package source.restaurant_web_project.model.entity;
 
 import source.restaurant_web_project.model.entity.superClass.BaseEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -16,8 +14,9 @@ public class Category extends BaseEntity {
     @Column(columnDefinition = "text")
     private String description;
 
-    @OneToMany(mappedBy = "category",targetEntity = Item.class)
-    private Set<Item> items;
+    private long position;
+    @OneToMany(mappedBy = "category", targetEntity = Item.class, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Item> items;
 
     public String getDescription() {
         return description;
@@ -35,11 +34,19 @@ public class Category extends BaseEntity {
         this.name = name;
     }
 
-    public Set<Item> getItems() {
+    public List<Item> getItems() {
         return items;
     }
 
-    public void setItems(Set<Item> items) {
+    public void setItems(List<Item> items) {
         this.items = items;
+    }
+
+    public long getPosition() {
+        return position;
+    }
+
+    public void setPosition(long position) {
+        this.position = position;
     }
 }

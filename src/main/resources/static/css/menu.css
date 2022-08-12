@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Ultra&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Courgette&family=Ultra&display=swap');
+
+.category-name{
+    font-family: 'Ultra', serif;
+    display: inline-block;
+    font-size: 20px;
+    margin-right: 5px;
+    width: 30%;
+    float: left;
+}
+
+.menu-items-header{
+    font-family: 'Ultra', serif;
+    font-size: xx-large;
+    text-align: left;
+    padding-left: 33%;
+}
+
+.menu-items-not-picked{
+    font-family: 'Ultra', serif;
+    font-size: large;
+    text-align: left;
+    padding-top: 5%;
+    padding-left: 30%;
+    width: 50%;
+}
+
+.menu-items-body-left{
+    padding-left: 21%;
+    width: 50%;
+    font-family: 'Courgette', cursive;
+    font-size: 30px;
+    text-align: left;
+}
+
+.menu-item-left{
+    display: inline-block;
+    text-align: left;
+    width: 55%;
+}
+
+.menu-item-price{
+    width: 35%;
+    text-align: right;
+    padding: 0;
+}
+
+.menu-item-addToBag{
+    width: 10%;
+}
