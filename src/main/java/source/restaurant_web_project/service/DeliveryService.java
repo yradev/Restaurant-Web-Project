@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface DeliveryService {
-    void addItemToBag(String itemName, BigDecimal price);
+    boolean addItemToBag(String itemName, BigDecimal price);
     List<ItemBagDTO> getItemsFromBag();
     void deleteItemFromBag(String itemName,BigDecimal price);
 

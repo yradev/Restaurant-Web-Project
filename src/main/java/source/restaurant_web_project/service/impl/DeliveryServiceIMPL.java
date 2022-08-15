@@ -43,13 +43,16 @@ public class DeliveryServiceIMPL implements DeliveryService {
     }
 
     @Override
-    public void addItemToBag(String itemName,BigDecimal price) {
+    public boolean addItemToBag(String itemName,BigDecimal price) {
+        if(getItemsFromBag().size()==14){
+            return false;
+        }
      Cookie cookie =  Arrays.stream(request.getCookies())
              .filter(a->a.getName().equals("ItemsBag"))
              .map(Cookie::getValue)
              .findFirst()
-             .map(a->new Cookie("ItemsBag",String.format("%s%s?%s|",a,itemName,price)))
-             .orElse(new Cookie("ItemsBag",String.format("%s?%s|",itemName,price)));
+             .map(a->new Cookie("ItemsBag",String.format("%s%s?%s|",a,itemName.replace(" ","_"),price)))
+             .orElse(new Cookie("ItemsBag",String.format("%s?%s|",itemName.replace(" ","_"),price)));
 
         cookie.setMaxAge(24 * 60 * 60); // expires in 1 days
         cookie.setSecure(true);
@@ -58,6 +61,7 @@ public class DeliveryServiceIMPL implements DeliveryService {
 
 
      response.addCookie(cookie);
+     return true;
     }
 
     @Override
@@ -76,17 +80,17 @@ public class DeliveryServiceIMPL implements DeliveryService {
         if(itemBag==null){
             return new ArrayList<>();
         }
-            List<String> itemsAndPrices = Arrays.stream(itemBag.split("\\|")).toList(); // Separator between items
+
+        List<String> itemsAndPrices = Arrays.stream(itemBag.split("\\|")).toList(); // Separator between items
 
             List<ItemBagDTO> itemsBag = new ArrayList<>();
             Map<String, Long> countsOfItems= new LinkedHashMap<>();
 
 
-
             itemsAndPrices.forEach(a->{
                 String [] splitItemsAndPrices = a.split("\\?"); // Separator between items and prices
 
-                String itemName = splitItemsAndPrices[0];
+                String itemName = splitItemsAndPrices[0].replace("_"," ");
                 BigDecimal itemPrice = BigDecimal.valueOf(Double.parseDouble(splitItemsAndPrices[1]));
 
                 if(countsOfItems.containsKey(itemName)){

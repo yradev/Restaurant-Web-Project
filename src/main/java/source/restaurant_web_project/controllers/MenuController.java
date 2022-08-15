@@ -14,6 +14,7 @@ import source.restaurant_web_project.service.UserService;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("menu")
@@ -33,8 +34,12 @@ public class MenuController {
         return itemService.getCategoryNameAndDescription();
     }
 
-    @ModelAttribute("items")
-    public List<ItemViewDTO>items(){
+    @ModelAttribute("itemsLeft")
+    public List<ItemViewDTO>getItemsLeft(){
+        return new ArrayList<>();
+    }
+    @ModelAttribute("itemsRight")
+    public List<ItemViewDTO>getItemsRight(){
         return new ArrayList<>();
     }
 
@@ -46,16 +51,24 @@ public class MenuController {
 
     @GetMapping("items/get/{categoryName}")
     public String getItems(@PathVariable String categoryName, RedirectAttributes redirectAttributes){
-        redirectAttributes.addFlashAttribute("items",itemService.getItemsView(categoryName));
+        redirectAttributes.addFlashAttribute("itemsLeft",itemService.getItemsView(categoryName).stream().limit(10).collect(Collectors.toList()));
+        redirectAttributes.addFlashAttribute("itemsRight",itemService.getItemsView(categoryName).stream().skip(10).limit(10).collect(Collectors.toList()));
         redirectAttributes.addFlashAttribute("currentCategory",categoryName);
         return "redirect:/menu";
     }
 
 
     @GetMapping("items/add/bag/{itemName}")
-    public String addCookieToBag(@PathVariable String itemName){
+    public String addCookieToBag(@PathVariable String itemName,RedirectAttributes redirectAttributes){
         Item item = itemService.findItem(itemName);
         deliveryService.addItemToBag(itemName,item.getPrice());
+        if(!deliveryService.addItemToBag(itemName,item.getPrice())){
+            redirectAttributes.addFlashAttribute("bagIsFull",true);
+        }
+
+        if(itemName.equals("Lunch menu")){
+            return "redirect:/";
+        }
         String categoryName = item.getCategory().getName();
         return "redirect:/menu/items/get/"+categoryName;
     }

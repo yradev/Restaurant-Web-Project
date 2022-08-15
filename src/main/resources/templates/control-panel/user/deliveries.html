@@ -9,45 +9,110 @@
     <div class="container-fluid justify-content-center d-flex h-75">
         <div class="row w-100">
             <div class="col-xs col-lg-5 list-field w-50">
-                <div class="container-fluid h-100">
+                <div class="container-fluid h-100" style="padding: 0 8%;">
                     <div class="row">
-                        <p class="auth-header" style="padding: 10px 0">History of Deliveries</p>
+                        <p class="auth-header" style="padding: 10px 0">Active delivery</p>
                     </div>
-                    <div class="row" th:each="delivery : ${historyDeliveries}">
-                        <div th:text="|${delivery.receiveTime} - ${delivery.deliveryAddress} ${delivery.deliveryStatus}|"></div>
-                        <div th:text="|Total price: ${delivery.totalPrice}|"></div>
-                        <div>
-                            <button type="button" class="btn btn-info">View items</button>
-                            <a th:href="@{/delivery/delete/{id}(id=${delivery.id})}">
-                        </div>
+                    <!--                    <div class="row">-->
+                    <!--                        <div class="separator"></div>-->
+                    <!--                    </div>-->
+
+                    <div th:if="${activeDeliveries.isEmpty()}">
+                        <div style="text-align: left; font-weight: bold; width: 90%">We dont have active delivery!</div>
+                        <div class="separator"></div>
+                    </div>
+                    <div th:unless="${activeDeliveries.isEmpty()}" class="row" th:each="delivery : ${activeDeliveries}">
+                        <div style="text-align: left; font-weight: bold; width: 90%" th:text="|${delivery.receiveTime}: ${delivery.deliveryAddress.name} ${delivery.totalPrice} ${delivery.deliveryStatus}|"></div>
+                        <div style="float: right; width: 10%"><button class="btn btn-primary btn-sm">Cancel</button></div>
+                        <div class="separator"></div>
+                    </div>
+                    <div class="row">
+                        <p class="auth-header" style="padding: 10px 0">History deliveries</p>
+                    </div>
+                    <div th:if="${historyDeliveries.isEmpty()}">
+                        <div style="text-align: left; font-weight: bold; width: 90%">We dont have deliveries history!</div>
+                        <div class="separator"></div>
+                    </div>
+                    <div th:unless="${historyDeliveries.isEmpty()}" class="row" th:each="delivery : ${historyDeliveries}">
+                        <div style="text-align: left; font-weight: bold; width: 90%" th:text="|${delivery.receiveTime}: ${delivery.deliveryAddress.name} ${delivery.totalPrice}|"></div>
+                        <div class="separator"></div>
+                    </div>
+                    <div class="bottom-left" style="margin-left: 5%; margin-bottom: 5px">
+
                     </div>
 
+                    <div class="bottom-right" style="margin-bottom: 2%; left: 65%">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16"
+                             style="margin-right: 2%;"  data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="You can store max 40 history records!">
+
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"></path>
+                        </svg>
+                        <button type="button" class="btn btn-primary">Clear history</button>
+                    </div>
                 </div>
             </div>
 
+            <!--            Start of item control-->
 
             <div class="col-xs col-lg-6 list-field w-50">
                 <div class="container-fluid h-100" style="padding: 0 20%;">
                     <div class="row">
-                        <p class="auth-header" style="padding: 10px 0">Active Deliveries</p>
+                        <p class="auth-header" style="padding: 10px 0;"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16"
+                                                                             style="margin-right: 2%;"  data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="You can have max 14 different items in your bag!">
+
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"></path>
+                        </svg> Add new delivery</p>
                     </div>
 
-                    <div class="row" th:each="delivery : ${activeDeliveries}">
-                        <div th:text="|${delivery.receiveTime} - ${delivery.deliveryAddress} ${delivery.deliveryStatus}|"></div>
-                        <div th:text="|Total price: ${delivery.totalPrice}|"></div>
-                        <div>
-                            <button type="button" class="btn btn-info">View items</button>
-                            <a th:href="@{/delivery/delete/{id}(id=${delivery.id})}"><button th:if="${delivery.deliveryStatus}==${delivery.deliveryStatus.PENDING}" type="button" class="btn btn-primary"
-                                       data-bs-placement="right" data-bs-title="You can cancel delivery only when status is PENDING!">Cancel delivery</button></a>
+                    <div class="row">
 
-                            <button th:unless="${delivery.deliveryStatus}==${delivery.deliveryStatus.PENDING}" type="button" class="btn btn-secondary" data-bs-toggle="tooltip"
-                                    data-bs-placement="right" data-bs-title="You can cancel delivery only when status is PENDING!">Cancel delivery</button>
+                        <div th:if="${itemsBag.isEmpty()}" style="font-size: medium; font-weight: bold;">Item bag is empty!</div>
+
+                        <div th:unless="${itemsBag.isEmpty()}">
+
+                            <div class="row" th:each="item : ${itemsBag}">
+                                <div class="container-fluid">
+                                    <div class="row" style="font-weight: bold">
+                                        <div th:text="${item.name}" class="col-xs col-lg-4" style="text-align: left;padding: 0"></div>
+                                        <div class="col-xs col-lg-2">
+                                            <div th:text="${item.countInBag}"></div>
+                                        </div>
+
+                                        <div th:text="|${item.price} BGN|" class="col-xs col-lg-3" style="text-align: right"></div>
+                                        <div th:text="|${item.totalPrice} BGN|" style="text-align: right" class="col-xs col-lg-3"></div>
+
+                                        <div class="row separator"></div>
+                                    </div>
+                            </div>
+                            </div>
+
+                        <div th:if="${addresses.isEmpty()}" style="padding-top: 5%; font-size: medium; font-weight: bold;">You need to add delivery address! You can do it from profile settings.</div>
+                        <div th:unless="${addresses.isEmpty()}" style="padding-top: 5%">
+                            <form
+                                    th:action="@{/user/deliveries/new/processing}"
+                                    th:method="POST">
+
+                                <div class="form-floating input-group mb-2">
+                                    <select class="form-select" id="deliveryAddressName" name="deliveryAddressName">
+                                        <option th:each="address : ${addresses}" th:value="${address.name}" th:text="${address.name}">
+                                        </option>
+                                    </select>
+                                    <label for="deliveryAddressName">Delivery address</label>
+                                </div>
+
+                                <button th:if="${activeDeliveries.isEmpty()}" type="submit" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="You can have only one active delivery!">Add delivery</button>
+                                <button th:unless="${activeDeliveries.isEmpty()}" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="You can have only one active delivery!">Add delivery</button>
+                            </form>
+                        </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
-    </div>>
+    </div>
 </main>
 <footer th:replace="fragments/commons::footer"></footer>
 

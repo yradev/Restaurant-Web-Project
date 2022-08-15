@@ -11,20 +11,10 @@ import java.util.Set;
 public class Category extends BaseEntity {
     @Column(unique = true)
     private String name;
-    @Column(columnDefinition = "text")
-    private String description;
 
     private long position;
     @OneToMany(mappedBy = "category", targetEntity = Item.class, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Item> items;
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public String getName() {
         return name;

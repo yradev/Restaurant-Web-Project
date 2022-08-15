@@ -56,7 +56,7 @@ public class UserController {
 
     @GetMapping("settings")
     public ModelAndView getSettings(ModelAndView modelAndView, Principal principal){
-        modelAndView.setViewName("settings/user/settings");
+        modelAndView.setViewName("control-panel/user/settings");
 
         return modelAndView;
     }
@@ -136,7 +136,7 @@ public class UserController {
 
     @GetMapping("deliveries")
     public ModelAndView modelAndView(ModelAndView modelAndView,Principal principal){
-        modelAndView.setViewName("settings/user/deliveries");
+        modelAndView.setViewName("control-panel/user/deliveries");
         modelAndView.addObject("activeDeliveries",
                 deliveryService.getDeliveriesForCurrentUser(principal.getName()).stream()
                         .filter(DeliveryViewDTO::isActive)
@@ -147,7 +147,20 @@ public class UserController {
                         .filter(delivery->!delivery.isActive())
                         .collect(Collectors.toList()));
 
-
+        modelAndView.addObject("addresses",userService.getUser(principal.getName()).getAddress());
         return modelAndView;
+    }
+
+    @PostMapping("deliveries/new/processing")
+    public String newDeliveryProcessing(@RequestParam String deliveryAddressName, Principal principal){
+        deliveryService.addNewDelivery(deliveryAddressName,principal.getName());
+        return "redirect:/user/deliveries";
+    }
+
+
+    @GetMapping("deliveries/delete/{id}")
+    public String cancelDelivery(@PathVariable long id){
+        deliveryService.deleteDelivery(id);
+        return "redirect:/user/deliveries";
     }
 }

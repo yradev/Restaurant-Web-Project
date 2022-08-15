@@ -5,6 +5,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import source.restaurant_web_project.configuration.RestaurantContextConfiguration.RestaurantConfiguration;
+import source.restaurant_web_project.configuration.RestaurantContextConfiguration.RestaurantConfigurationDTO;
+import source.restaurant_web_project.configuration.enums.DayOfWeeks;
+import source.restaurant_web_project.configuration.enums.RestaurantStatus;
 import source.restaurant_web_project.model.dto.item.CategoryAddDTO;
 import source.restaurant_web_project.model.dto.item.CategoryEditDTO;
 import source.restaurant_web_project.model.dto.item.ItemAddDTO;
@@ -27,11 +31,13 @@ public class OwnerController {
     private final UserService userService;
     private final ItemService itemService;
     private final DataValidator dataValidator;
+    private final RestaurantConfiguration restaurantConfiguration;
 
-    public OwnerController(UserService userService, ItemService itemService, DataValidator dataValidator) {
+    public OwnerController(UserService userService, ItemService itemService, DataValidator dataValidator, RestaurantConfiguration restaurantConfiguration) {
         this.userService = userService;
         this.itemService = itemService;
         this.dataValidator = dataValidator;
+        this.restaurantConfiguration = restaurantConfiguration;
     }
 
     @ModelAttribute("categoryAddDTO")
@@ -65,9 +71,10 @@ public class OwnerController {
         return new ItemEditDTO();
     }
 
+
     @GetMapping("menu")
     public ModelAndView getMenuControl(ModelAndView modelAndView){
-        modelAndView.setViewName("settings/owner/menu-control");
+        modelAndView.setViewName("control-panel/owner/menu-control");
         modelAndView.addObject("categoriesSize",itemService.getCategories().size());
         modelAndView.addObject("categoryPositionsIds",itemService.getCategories().stream().map(Category::getPosition).collect(Collectors.toList()));
         modelAndView.addObject("categoryNames",itemService.getCategories().stream().map(Category::getName).collect(Collectors.toList()));
@@ -105,8 +112,7 @@ public class OwnerController {
     @PostMapping("menu/category/edit/processing")
     public String editCategory(@Valid CategoryEditDTO categoryEditDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes){
 
-
-            bindingResult = dataValidator.validateCategoryEdit(bindingResult, itemService.findCategory(categoryEditDTO.getName()));
+        bindingResult = dataValidator.validateCategoryEdit(bindingResult, categoryEditDTO(), itemService.findCategory(categoryEditDTO.getName()));
 
         if(bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("categoryEditDTO",categoryEditDTO);
@@ -164,7 +170,7 @@ public class OwnerController {
         }
 
         redirectAttributes.addFlashAttribute("currentItemViewPosition",viewID);
-        redirectAttributes.addFlashAttribute("itemPositionsIds",itemService.getCountOfItemsInCategory(categoryName));
+        redirectAttributes.addFlashAttribute("itemPositionsIds",itemService.getItemsByCategory(categoryName).stream().map(Item::getPosition).collect(Collectors.toList()));
         redirectAttributes.addFlashAttribute("currentCategory",categoryName);
         redirectAttributes.addFlashAttribute("ItemsSize",itemService.getItemsByCategory(categoryName).size());
         redirectAttributes.addFlashAttribute("haveCategory", true);
@@ -191,7 +197,32 @@ public class OwnerController {
         }
 
         itemService.editItem(itemEditDTO);
-        return "redirect:/owner/menu";
+
+        return "redirect:/owner/menu/item/get-view-page/"+ itemEditDTO.getCurrentViewPage() + "/" + itemEditDTO.getCurrentCategory();
     }
 
+
+    @GetMapping("configurations")
+    public ModelAndView restaurantConfiguration(ModelAndView modelAndView){
+        modelAndView.setViewName("control-panel/owner/restaurant-configurations");
+        modelAndView.addObject("Configurations",restaurantConfiguration.getConfigurations());
+        modelAndView.addObject("statusValues", RestaurantStatus.values());
+        modelAndView.addObject("dayOfWeeks", DayOfWeeks.values());
+        return modelAndView;
+    }
+
+    @PostMapping("configurations/processing")
+    public String configurationsProcessing(@Valid RestaurantConfigurationDTO restaurantConfigurationDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes){
+
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("haveError", true);
+            return "redirect:/owner/configurations";
+        }
+
+        redirectAttributes.addFlashAttribute("configured",true);
+        restaurantConfiguration.editConfigurations(restaurantConfigurationDTO);
+        return "redirect:/owner/configurations";
+    }
 }
+

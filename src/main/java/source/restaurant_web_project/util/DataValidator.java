@@ -1,10 +1,12 @@
 package source.restaurant_web_project.util;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import source.restaurant_web_project.model.dto.item.CategoryAddDTO;
+import source.restaurant_web_project.model.dto.item.CategoryEditDTO;
 import source.restaurant_web_project.model.dto.item.ItemEditDTO;
 import source.restaurant_web_project.model.dto.user.UserAddressSettingsDTO;
 import source.restaurant_web_project.model.dto.user.UserChangeEmailDTO;
@@ -25,20 +27,6 @@ public class DataValidator {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    public BindingResult validateSettings(User user, BindingResult bindingResult) {
-
-//        // email settings verification
-////
-
-////
-////        // password settings verification
-////
-////
-//
-
-        return bindingResult;
-    }
-
     public BindingResult validateCategoryAdd(CategoryAddDTO categoryAddDTO, Category category, BindingResult bindingResult) {
         if(category!=null && category.getName().equals(categoryAddDTO.getName())){
             bindingResult.addError(new FieldError("categoryExist","name","We have category with this name!"));
@@ -46,7 +34,13 @@ public class DataValidator {
         return bindingResult;
     }
 
-    public BindingResult validateCategoryEdit(BindingResult bindingResult, Category category) {
+    public BindingResult validateCategoryEdit(BindingResult bindingResult, CategoryEditDTO categoryEditDTO, Category category) {
+        if(categoryEditDTO.getName()!=null){
+            if(categoryEditDTO.getName().length()<3 || categoryEditDTO.getName().length()>10){
+                bindingResult.addError( new FieldError("categoryNameLength","name","Category name must be between 3 and 10 chars!"));
+            }
+        }
+
         if(category!=null) {
                 FieldError fieldError = new FieldError("categoryNameExist", "name", "Category name exists!");
                 bindingResult.addError(fieldError);
@@ -64,14 +58,14 @@ public class DataValidator {
     }
 
     public void validateItemEdit(BindingResult bindingResult, ItemEditDTO itemEditDTO, Item item) {
-        if(item!=null){
+        if(item!=null && !itemEditDTO.getName().equals("")){
             FieldError fieldError = new FieldError("nameEquals","name","Item name exist!");
             bindingResult.addError(fieldError);
         }
 
-        if(!itemEditDTO.getName().equals("")){
-            if(itemEditDTO.getName().length()<3 && itemEditDTO.getName().length()>10){
-                FieldError fieldError = new FieldError("nameLengthError","name","Item name must be between 3 and 10 chars");
+        if(!itemEditDTO.getName().isEmpty()){
+            if(itemEditDTO.getName().length()<3 || itemEditDTO.getName().length()>20){
+                FieldError fieldError = new FieldError("nameLengthError","name","Item name must be between 3 and 20 chars");
                 bindingResult.addError(fieldError);
             }
 
@@ -124,5 +118,9 @@ public class DataValidator {
         }
 
         return bindingResult;
+    }
+
+    public boolean isUserLogged() {
+        return !SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("Guest");
     }
 }

@@ -5,29 +5,29 @@
 @import url('https://fonts.googleapis.com/css2?family=Courgette&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
 
-.top-items{
-    background-image: url(../files/top-items.png);
+
+.header-border {
+    background-image: url(../files/header.png);
     height: 100%; /* You must set a specified height */
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 90% 90%;
+    background-size: 100% 100%;
     text-align: center;
 }
-
-/*header {*/
-/*    background-image: url(../files/header.png);*/
-/*    height: 100%; !* You must set a specified height *!*/
-/*    background-repeat: no-repeat;*/
-/*    background-position: center;*/
-/*    background-size: 40% 100%;*/
-/*    text-align: center;*/
-/*}*/
 
 .form-background {
     background-image: url(../files/header.png);
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 40% 100%;
+    background-size: 80% 100%;
+    text-align: center;
+}
+
+.form-login-index-background {
+    background-image: url(../files/header.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
     text-align: center;
 }
 
@@ -38,7 +38,7 @@
     height: 100%; /* You must set a specified height */
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 70% 100%;
+    background-size: 90% 100%;
     text-align: center;
 }
 
@@ -57,33 +57,47 @@
     height: 100%; /* You must set a specified height */
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 66% 100%;
+    background-size: 70% 100%;
 }
 
-.status-background{
-    background-image: url(../files/status-image.png);
-    height: 400px; /* You must set a specified height */
-    background-position: center; /* Center the image */
-    background-repeat: no-repeat; /* Do not repeat the image */
-    background-size: contain; /* Resize the background image to cover the entire container */
+/*.status-background{*/
+/*    background-image: url(../files/status-image.png);*/
+/*    height: 400px; !* You must set a specified height *!*/
+/*    background-position: center; !* Center the image *!*/
+/*    background-repeat: no-repeat; !* Do not repeat the image *!*/
+/*    background-size: contain; !* Resize the background image to cover the entire container *!*/
 
-    padding-top: 30px;
-    padding-left: 100px;
+/*    padding-top: 30px;*/
+/*    padding-left: 100px;*/
+/*    text-align: center;*/
+/*}*/
+
+.status-index-background{
+    background-image: url(../files/status-image.png);
+    height: 100%; /* You must set a specified height */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 90% 100%;
     text-align: center;
 }
+
 
 .today-menu{
     background-image: url(../files/today-menu.png);
-    background-size:contain;
-    height: 400px; /* You must set a specified height */
-    background-position: center; /* Center the image */
-    background-repeat: no-repeat; /* Do not repeat the image */
+    height: 100%; /* You must set a specified height */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 70% 100%;
     text-align: center;
+    line-height: 1;
+}
 
-    font-family: 'Kaushan Script', cursive;
-    color: brown;
-    font-size:xx-large;
-    font-weight: bold;
-    padding-top: 150px;
-
+.news-background{
+    background-image: url(../files/news.png);
+    height: 100%; /* You must set a specified height */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+    text-align: center;
+    line-height: 1;
 }

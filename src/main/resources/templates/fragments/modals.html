@@ -33,7 +33,7 @@
 
                     <div class="form-floating input-group mb-2">
                         <input type="text" class="form-control" id="addCategoryName" name="name" th:field="*{name}" th:errorclass="is-invalid">
-                        <label for="addCategoryDescription">Category name</label>
+                        <label for="addCategoryName">Category name</label>
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16"
                              style="position: absolute;margin:  5% 90%;"
                              data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Category name must be between 3 and 15 chars!">
@@ -43,20 +43,6 @@
                         </svg>
                         <div class="invalid-tooltip" th:if="${#fields.hasErrors('name')}" th:each="e : ${#fields.errors('name')}" th:text="${e}" style="font-size: x-small"></div>
                     </div>
-
-                    <div class="form-floating input-group">
-                        <textarea class="form-control" id="addCategoryDescription" style="height: 100px" th:field="*{description}" th:errorclass="is-invalid"></textarea>
-                        <label for="addCategoryDescription">Description</label>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16"
-                             style="position: absolute;margin:  5% 90%;"
-                             data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Category description must be max 30 chars!">
-
-                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
-                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"></path>
-                        </svg>
-                        <div class="invalid-tooltip" th:if="${#fields.hasErrors('description')}" th:each="e : ${#fields.errors('description')}" th:text="${e}" style="font-size: x-small"></div>
-                    </div>
-                </form>
 
                 <!--                            ///////-->
             </div>
@@ -151,22 +137,6 @@
                             <div class="input-group-append form-floating getCategoryName"  style="width: 35%">
                                 <input type="text" class="form-control" id="editCategoryCurrentName" name="currentName" th:field="*{currentName}" readonly>
                                 <label for="editCategoryCurrentName">Current name</label>
-                            </div>
-                        </div>
-
-                        <div class="form-floating input-group mb-2">
-                            <textarea class="form-control" id="editCategoryDescription" th:field="*{description}" th:errorclass="is-invalid" style="height: 100px"></textarea>
-                            <label for="editCategoryDescription">Description</label>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16"
-                                 style="position: absolute;margin:  4% 57%;"
-                                 data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Category description must be max 30 chars!">
-
-                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
-                                <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"></path>
-                            </svg>
-                            <div class="input-group-append form-floating getCategoryDescription"  style="width: 35%">
-                                <textarea class="form-control" id="editCategoryCurrentDescription" name="currentDescription" style="height: 100%" readonly></textarea>
-                                <label for="editCategoryCurrentDescription" style="font-size: small; font-weight: bold">Current description</label>
                             </div>
                         </div>
                     </form>
@@ -355,7 +325,7 @@
 
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16"
                                  style="position: absolute;margin:  4% 57%;"
-                                 data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Item name must be between 3 and 10 chars!">
+                                 data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Item name must be between 3 and 20 chars!">
 
                                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
                                 <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"></path>

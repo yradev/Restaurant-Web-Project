@@ -1,11 +1,9 @@
 package source.restaurant_web_project.service;
 
-import source.restaurant_web_project.model.dto.item.CategoryAddDTO;
-import source.restaurant_web_project.model.dto.item.CategoryEditDTO;
-import source.restaurant_web_project.model.dto.item.ItemAddDTO;
-import source.restaurant_web_project.model.dto.item.ItemEditDTO;
+import source.restaurant_web_project.model.dto.item.*;
 import source.restaurant_web_project.model.dto.view.CategoryViewDTO;
 import source.restaurant_web_project.model.dto.view.ItemViewDTO;
+import source.restaurant_web_project.model.dto.view.LunchMenuViewDTO;
 import source.restaurant_web_project.model.entity.Category;
 import source.restaurant_web_project.model.entity.Item;
 
@@ -28,8 +26,6 @@ public interface ItemService {
 
     void deleteItem(String itemName, String categoryName);
 
-    long getCountOfItemsInCategory(String categoryName);
-
     void editItem(ItemEditDTO itemEditDTO);
 
     Item findItem(String name);
@@ -37,4 +33,5 @@ public interface ItemService {
     List<CategoryViewDTO> getCategoryNameAndDescription();
 
     List<ItemViewDTO> getItemsView(String categoryName);
+
 }

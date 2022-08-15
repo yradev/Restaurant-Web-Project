@@ -1,12 +1,23 @@
 package source.restaurant_web_project.controllers;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import source.restaurant_web_project.model.dto.AddNewNewsDTO;
+import source.restaurant_web_project.model.dto.item.LunchMenuAddDTO;
 import source.restaurant_web_project.model.dto.view.DeliveryViewDTO;
+import source.restaurant_web_project.model.dto.view.LunchMenuViewDTO;
+import source.restaurant_web_project.model.dto.view.NewsViewDTO;
+import source.restaurant_web_project.model.entity.enums.LunchMenuStatus;
 import source.restaurant_web_project.service.DeliveryService;
+import source.restaurant_web_project.service.ItemService;
+import source.restaurant_web_project.service.LunchMenuService;
+import source.restaurant_web_project.service.NewsService;
 
+import javax.validation.Valid;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
@@ -14,16 +25,127 @@ import java.util.stream.Collectors;
 public class StaffController {
 
     private final DeliveryService deliveryService;
+    private final ItemService itemService;
+    private final LunchMenuService lunchMenuService;
+    private final NewsService newsService;
 
-    public StaffController(DeliveryService deliveryService) {
+    public StaffController(DeliveryService deliveryService, ItemService itemService, LunchMenuService lunchMenuService, NewsService newsService) {
         this.deliveryService = deliveryService;
+        this.itemService = itemService;
+        this.lunchMenuService = lunchMenuService;
+        this.newsService = newsService;
+    }
+
+
+    @ModelAttribute("lunchMenuAddDTO")
+    public LunchMenuAddDTO lunchMenuDTO(){
+        return lunchMenuService.getLunchMenuAddDto();
+    }
+
+    @ModelAttribute("lunchMenuHistory")
+    public List<LunchMenuViewDTO> viewHistory(){
+        return lunchMenuService.getLunchHistory().stream().limit(9).collect(Collectors.toList());
+    }
+
+    @ModelAttribute("addNewNewsDTO")
+    public AddNewNewsDTO addNewNewsDTO(){
+        return new AddNewNewsDTO();
+    }
+
+    @ModelAttribute("historyNews")
+    public List<NewsViewDTO> NewsViewDTO(){
+        return newsService.getHistoryNews().stream().limit(8).collect(Collectors.toList());
     }
 
     @GetMapping("deliveries")
     public ModelAndView getSettingsDelivery(ModelAndView modelAndView){
-        modelAndView.setViewName("settings/staff/deliveries");
+        modelAndView.setViewName("control-panel/staff/deliveries");
         modelAndView.addObject("activeDeliveries",deliveryService.getDeliveriesForStaff().stream().filter(DeliveryViewDTO::isActive).collect(Collectors.toList()));
         modelAndView.addObject("HistoryDeliveries",deliveryService.getDeliveriesForStaff().stream().filter(delivery->!delivery.isActive()).collect(Collectors.toList()));
         return modelAndView;
+    }
+
+
+    @GetMapping("lunch-menu")
+    public ModelAndView lunchMenu(ModelAndView modelAndView){
+        modelAndView.setViewName("control-panel/staff/lunch-menu");
+        modelAndView.addObject("statusValues", LunchMenuStatus.values());
+        return modelAndView;
+    }
+
+    @PostMapping("lunch-menu/processing")
+    public String lunchMenuAdd(@Valid LunchMenuAddDTO lunchMenuAddDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes){
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("lunchMenuAddDTO", lunchMenuAddDTO);
+            redirectAttributes.addFlashAttribute(
+                    "org.springframework.validation.BindingResult.lunchMenuAddDTO", bindingResult);
+            return "redirect:/staff/lunch-menu";
+        }
+        redirectAttributes.addFlashAttribute("added",true);
+        lunchMenuService.addTodayLunchMenu(lunchMenuAddDTO);
+        return "redirect:/staff/lunch-menu";
+    }
+
+
+    @GetMapping("/lunch-menu/history/get-view-page/{historyID}")
+    public String getLunchMenuHistory(@PathVariable int historyID,RedirectAttributes redirectAttributes){
+        switch (historyID) {
+            case 1 -> redirectAttributes.addFlashAttribute("lunchMenuHistory", lunchMenuService.getLunchHistory().stream().limit(9).collect(Collectors.toList()));
+            case 2 -> redirectAttributes.addFlashAttribute("lunchMenuHistory", lunchMenuService.getLunchHistory().stream().skip(9).limit(18).collect(Collectors.toList()));
+            case 3 -> redirectAttributes.addFlashAttribute("lunchMenuHistory", lunchMenuService.getLunchHistory().stream().skip(18).limit(27).collect(Collectors.toList()));
+            case 4 -> redirectAttributes.addFlashAttribute("lunchMenuHistory", lunchMenuService.getLunchHistory().stream().skip(27).limit(36).collect(Collectors.toList()));
+            case 5 -> redirectAttributes.addFlashAttribute("lunchMenuHistory", lunchMenuService.getLunchHistory().stream().skip(36).limit(45).collect(Collectors.toList()));
+        }
+        return "redirect:/staff/lunch-menu";
+    }
+
+    @GetMapping("/lunch-menu/history/clear")
+    public String clearHistory(){
+        lunchMenuService.clearLunchMenuHistory();
+        return "redirect:/staff/lunch-menu";
+    }
+
+    @GetMapping("/news")
+    public ModelAndView getNews(ModelAndView modelAndView){
+        modelAndView.setViewName("control-panel/staff/news");
+        modelAndView.addObject("activeNews",newsService.getActiveNews());
+        return modelAndView;
+    }
+
+    @PostMapping("/news/add/processing")
+    public String addNews(@Valid AddNewNewsDTO addNewNewsDTO, BindingResult bindingResult,RedirectAttributes redirectAttributes){
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("addNewNewsDTO", addNewNewsDTO);
+            redirectAttributes.addFlashAttribute(
+                    "org.springframework.validation.BindingResult.addNewNewsDTO", bindingResult);
+            return "redirect:/staff/news";
+        }
+
+        newsService.addNews(addNewNewsDTO);
+        return "redirect:/staff/news";
+    }
+
+    @GetMapping("news/delete/{id}")
+    public String deleteNews(@PathVariable int id){
+        newsService.deleteNews(id);
+        return "redirect:/staff/news";
+    }
+
+    @GetMapping("news/history/get-view-page/{historyID}")
+    public String historyNews(@PathVariable int historyID,RedirectAttributes redirectAttributes){
+        switch (historyID) {
+            case 1 -> redirectAttributes.addFlashAttribute("historyNews", newsService.getHistoryNews().stream().limit(8).collect(Collectors.toList()));
+            case 2 -> redirectAttributes.addFlashAttribute("historyNews", newsService.getHistoryNews().stream().skip(8).limit(16).collect(Collectors.toList()));
+            case 3 -> redirectAttributes.addFlashAttribute("historyNews", newsService.getHistoryNews().stream().skip(16).limit(24).collect(Collectors.toList()));
+            case 4 -> redirectAttributes.addFlashAttribute("historyNews", newsService.getHistoryNews().stream().skip(24).limit(32).collect(Collectors.toList()));
+            case 5 -> redirectAttributes.addFlashAttribute("historyNews", newsService.getHistoryNews().stream().skip(32).limit(40).collect(Collectors.toList()));
+        }
+        return "redirect:/staff/news";
+    }
+
+    @GetMapping("news/history/clear")
+    public String clearNewsHistory(){
+        newsService.clearHistory();
+        return "redirect:/staff/news";
     }
 }

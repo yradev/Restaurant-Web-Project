@@ -11,7 +11,6 @@ public class NewReservationDTO {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime reservationFor;
     private int countOfPersons;
-    private ReservationStatus status;
 
     public NewReservationDTO(){}
 
@@ -29,13 +28,5 @@ public class NewReservationDTO {
 
     public void setCountOfPersons(int countOfPersons) {
         this.countOfPersons = countOfPersons;
-    }
-
-    public ReservationStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ReservationStatus status) {
-        this.status = status;
     }
 }

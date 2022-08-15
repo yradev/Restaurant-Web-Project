@@ -1,26 +1,7 @@
-.top-items p:first-child{
-    color: black;
-    font-size: xx-large;
-    font-weight: bold;
-    padding-top: 100px;
-    padding-bottom: 20px;
-}
-
-.top-items p:not(:first-child){
-    color: black;
-    font-size: large;
-    font-weight: bold;
-    padding-top: 2px;
-}
-
-
 .text-rotate{
-    transform: rotate(-15deg);
+    transform: rotate(-12deg);
 }
 
-.text-rotate p:first-child{
-    padding-bottom: 20px;
-}
 .text-rotate p:not(:first-child) {
     padding-top: 20px;
 }
@@ -31,10 +12,9 @@
 
 
 .restaurant-status{
-    color: rgb(12, 223, 30);
     font-size: large;
     font-weight: bold;
-    padding-top: 10px;
+    padding-left: 12%;
 }
 
 .working-time{
@@ -42,6 +22,7 @@
     font-size: large;
     font-weight: bold;
     padding-top: 20px;
+    margin-left: 15%;
 }
 
 .location{
@@ -49,32 +30,6 @@
     font-size: large;
     font-weight: bold;
     padding-top: 20px;
-}
-
-
-.welcome{
-    font-size:50px;
-    font-family: 'Lobster', cursive;
-}
-
-
-.welcome:nth-child(2){
-    font-size: medium;
-    font-family:  Open Sans, sans-serif;;
-}
-
-.gradient-img-background:before {
-    content: '';
-    position:absolute;
-    top:0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-            45deg,
-            rgba(53, 52, 52, 0.7),
-            rgba(66, 66, 66, 0.7) 100%
-    );
 }
 
 .category-value{
@@ -92,4 +47,38 @@
 .dropdown-address-details{
     display: inline-block;
     width: 45%;
+}
+.restaurant-name{
+    font-family: 'Berkshire Swash', cursive;
+    text-align: center;
+    color: black;
+    font-size: xxx-large;
+    font-weight: bold;
+    line-height: 1;
+    padding-bottom: 2%;
+}
+
+.restaurant-description{
+    text-align: center;
+    color: black;
+    font-size: medium;
+    font-weight: bold;
+}
+
+.index-login-form {
+    margin-bottom: 20%;
+}
+
+.forgot-password{
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+
+.today-menu {
+    font-family: 'Kaushan Script', cursive;
+    color: brown;
+    font-size: xx-large;
+    font-weight: bold;
+    padding-top: 5%;
 }
