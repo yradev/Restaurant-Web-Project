@@ -43,7 +43,10 @@ public class NewsServiceIMPL implements NewsService {
 
     @Override
     public List<NewsViewDTO> getHistoryNews() {
-        return newsRepository.findByStatus(NewsStatus.CLOSED).stream().map(news->modelMapper.map(news,NewsViewDTO.class)).collect(Collectors.toList());
+        return newsRepository.findByStatus(NewsStatus.CLOSED)
+                .stream()
+                .map(news->modelMapper.map(news,NewsViewDTO.class))
+                .collect(Collectors.toList());
     }
 
     @Override

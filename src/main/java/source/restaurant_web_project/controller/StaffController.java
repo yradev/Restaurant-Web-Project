@@ -160,14 +160,57 @@ public class StaffController {
         return "redirect:/staff/news";
     }
 
-    @GetMapping("deliveries/get/active/{deliveryStatus}")
-    public String getActiveDeliveries(@PathVariable String deliveryStatus,RedirectAttributes redirectAttributes){
+    @GetMapping("deliveries/get/active/{deliveryStatus}/{viewID}")
+    public String getActiveDeliveries(@PathVariable String deliveryStatus, @PathVariable int viewID,RedirectAttributes redirectAttributes){
        DeliveryStatus deliveryStatus1 = DeliveryStatus.valueOf(deliveryStatus);
-       redirectAttributes.addFlashAttribute("activeDeliveries",
-               deliveryService.getDeliveriesForStaff().stream()
-                       .filter(delivery -> delivery.getDeliveryStatus().equals(deliveryStatus1))
-                       .collect(Collectors.toList()));
+
+
+        switch (viewID) {
+            case 1 -> redirectAttributes.addFlashAttribute("activeDeliveries",
+                            deliveryService.getDeliveriesForStaff().stream()
+                                    .filter(delivery -> delivery.getDeliveryStatus().equals(deliveryStatus1) && delivery.isActive())
+                                    .limit(10)
+                                    .collect(Collectors.toList()));
+        case 2 -> redirectAttributes.addFlashAttribute("activeDeliveries",
+                            deliveryService.getDeliveriesForStaff().stream()
+                                    .filter(delivery -> delivery.getDeliveryStatus().equals(deliveryStatus1) && delivery.isActive())
+                                    .skip(10)
+                                    .limit(20)
+                                    .collect(Collectors.toList()));
+        case 3 -> redirectAttributes.addFlashAttribute("activeDeliveries",
+                            deliveryService.getDeliveriesForStaff().stream()
+                                    .filter(delivery -> delivery.getDeliveryStatus().equals(deliveryStatus1) && delivery.isActive())
+                                    .skip(20)
+                                    .limit(30)
+                                    .collect(Collectors.toList()));
+        case 4 -> redirectAttributes.addFlashAttribute("activeDeliveries",
+                            deliveryService.getDeliveriesForStaff().stream()
+                                    .filter(delivery -> delivery.getDeliveryStatus().equals(deliveryStatus1) && delivery.isActive())
+                                    .skip(30)
+                                    .limit(40)
+                                    .collect(Collectors.toList()));
+        case 5 -> redirectAttributes.addFlashAttribute("activeDeliveries",
+                            deliveryService.getDeliveriesForStaff().stream()
+                                    .filter(delivery -> delivery.getDeliveryStatus().equals(deliveryStatus1) && delivery.isActive())
+                                    .skip(40)
+                                    .limit(10)
+                                    .collect(Collectors.toList()));
+        }
+
        redirectAttributes.addFlashAttribute("activeDeliveriesNotEmpty",true);
+        redirectAttributes.addFlashAttribute("currentStatus",deliveryStatus);
+        return "redirect:/staff/deliveries";
+    }
+
+    @GetMapping("deliveries/actives/get-view-page/{viewID}")
+    public String getActiveDeliveriesPage(@PathVariable int viewID,RedirectAttributes redirectAttributes){
+        switch (viewID) {
+            case 1 -> redirectAttributes.addFlashAttribute("historyNews", newsService.getHistoryNews().stream().limit(8).collect(Collectors.toList()));
+            case 2 -> redirectAttributes.addFlashAttribute("historyNews", newsService.getHistoryNews().stream().skip(8).limit(16).collect(Collectors.toList()));
+            case 3 -> redirectAttributes.addFlashAttribute("historyNews", newsService.getHistoryNews().stream().skip(16).limit(24).collect(Collectors.toList()));
+            case 4 -> redirectAttributes.addFlashAttribute("historyNews", newsService.getHistoryNews().stream().skip(24).limit(32).collect(Collectors.toList()));
+            case 5 -> redirectAttributes.addFlashAttribute("historyNews", newsService.getHistoryNews().stream().skip(32).limit(40).collect(Collectors.toList()));
+        }
         return "redirect:/staff/deliveries";
     }
 }
