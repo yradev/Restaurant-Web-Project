@@ -1,4 +1,4 @@
-package source.restaurant_web_project.controllers;
+package source.restaurant_web_project.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -10,6 +10,7 @@ import source.restaurant_web_project.model.dto.item.LunchMenuAddDTO;
 import source.restaurant_web_project.model.dto.view.DeliveryViewDTO;
 import source.restaurant_web_project.model.dto.view.LunchMenuViewDTO;
 import source.restaurant_web_project.model.dto.view.NewsViewDTO;
+import source.restaurant_web_project.model.entity.enums.DeliveryStatus;
 import source.restaurant_web_project.model.entity.enums.LunchMenuStatus;
 import source.restaurant_web_project.service.DeliveryService;
 import source.restaurant_web_project.service.ItemService;
@@ -17,6 +18,8 @@ import source.restaurant_web_project.service.LunchMenuService;
 import source.restaurant_web_project.service.NewsService;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,11 +60,19 @@ public class StaffController {
         return newsService.getHistoryNews().stream().limit(8).collect(Collectors.toList());
     }
 
+    @ModelAttribute("activeDeliveries")
+    public List<DeliveryViewDTO> getEmptyActiveDeliveries(){
+        return new ArrayList<>();
+    }
+    @ModelAttribute("historyDeliveries")
+    public List<DeliveryViewDTO> getHistoryDeliveries(){
+        return deliveryService.getDeliveriesForStaff().stream().filter(delivery->!delivery.isActive()).collect(Collectors.toList());
+    }
+
     @GetMapping("deliveries")
     public ModelAndView getSettingsDelivery(ModelAndView modelAndView){
         modelAndView.setViewName("control-panel/staff/deliveries");
-        modelAndView.addObject("activeDeliveries",deliveryService.getDeliveriesForStaff().stream().filter(DeliveryViewDTO::isActive).collect(Collectors.toList()));
-        modelAndView.addObject("HistoryDeliveries",deliveryService.getDeliveriesForStaff().stream().filter(delivery->!delivery.isActive()).collect(Collectors.toList()));
+        modelAndView.addObject("getStaffActiveDeliveryStatus", deliveryService.getActiveDeliveriesNames());
         return modelAndView;
     }
 
@@ -147,5 +158,16 @@ public class StaffController {
     public String clearNewsHistory(){
         newsService.clearHistory();
         return "redirect:/staff/news";
+    }
+
+    @GetMapping("deliveries/get/active/{deliveryStatus}")
+    public String getActiveDeliveries(@PathVariable String deliveryStatus,RedirectAttributes redirectAttributes){
+       DeliveryStatus deliveryStatus1 = DeliveryStatus.valueOf(deliveryStatus);
+       redirectAttributes.addFlashAttribute("activeDeliveries",
+               deliveryService.getDeliveriesForStaff().stream()
+                       .filter(delivery -> delivery.getDeliveryStatus().equals(deliveryStatus1))
+                       .collect(Collectors.toList()));
+       redirectAttributes.addFlashAttribute("activeDeliveriesNotEmpty",true);
+        return "redirect:/staff/deliveries";
     }
 }

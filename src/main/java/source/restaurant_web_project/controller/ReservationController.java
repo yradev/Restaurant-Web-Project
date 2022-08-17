@@ -1,4 +1,4 @@
-package source.restaurant_web_project.controllers;
+package source.restaurant_web_project.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;

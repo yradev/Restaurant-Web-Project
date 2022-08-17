@@ -1,4 +1,4 @@
-package source.restaurant_web_project.controllers;
+package source.restaurant_web_project.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

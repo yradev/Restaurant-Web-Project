@@ -61,6 +61,7 @@ public class DeliveryServiceIMPL implements DeliveryService {
 
 
      response.addCookie(cookie);
+
      return true;
     }
 
@@ -195,5 +196,20 @@ public class DeliveryServiceIMPL implements DeliveryService {
     @Override
     public List<DeliveryViewDTO> getDeliveriesForStaff() {
         return deliveryRepository.findAll().stream().map(delivery->modelMapper.map(delivery,DeliveryViewDTO.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public void addToHistory(long deliveryID, String status) {
+        Delivery delivery = deliveryRepository.findDeliveryById(deliveryID);
+        if(delivery.getStatus() != PENDING){
+            delivery.setStatus(DeliveryStatus.valueOf(status));
+            delivery.setActive(false);
+            deliveryRepository.saveAndFlush(delivery);
+        }
+    }
+
+    @Override
+    public List<DeliveryStatus> getActiveDeliveriesNames() {
+        return List.of(PENDING,DeliveryStatus.ACCEPTED,DeliveryStatus.TRAVELLING,DeliveryStatus.FEEDBACK);
     }
 }

@@ -1,4 +1,4 @@
-package source.restaurant_web_project.controllers;
+package source.restaurant_web_project.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +11,6 @@ import source.restaurant_web_project.service.DeliveryService;
 import source.restaurant_web_project.service.ItemService;
 import source.restaurant_web_project.service.UserService;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

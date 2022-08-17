@@ -1,8 +1,7 @@
-package source.restaurant_web_project.controllers;
+package source.restaurant_web_project.controller;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import source.restaurant_web_project.configuration.RestaurantContextConfiguration.ConfgurationRepository;
 import source.restaurant_web_project.configuration.RestaurantContextConfiguration.RestaurantConfiguration;
 import source.restaurant_web_project.configuration.RestaurantContextConfiguration.RestaurantConfigurationDTO;
 import source.restaurant_web_project.model.dto.view.ItemBagDTO;

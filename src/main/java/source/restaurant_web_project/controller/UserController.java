@@ -1,4 +1,4 @@
-package source.restaurant_web_project.controllers;
+package source.restaurant_web_project.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -10,13 +10,14 @@ import source.restaurant_web_project.model.dto.user.UserChangeEmailDTO;
 import source.restaurant_web_project.model.dto.user.UserPasswordChangeDTO;
 import source.restaurant_web_project.model.dto.user.UserViewSettingsDTO;
 import source.restaurant_web_project.model.dto.view.DeliveryViewDTO;
+import source.restaurant_web_project.model.entity.enums.DeliveryStatus;
 import source.restaurant_web_project.service.DeliveryService;
 import source.restaurant_web_project.service.UserService;
 import source.restaurant_web_project.util.DataValidator;
 
 import javax.validation.Valid;
-import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
@@ -54,8 +55,16 @@ public class UserController {
         return userService.getUserSettings(principal.getName());
     }
 
+    @ModelAttribute("historyDeliveries")
+    public List<DeliveryViewDTO> deliveryViewDTO(Principal principal){
+        return deliveryService.getDeliveriesForCurrentUser(principal.getName()).stream()
+                .filter(delivery->!delivery.isActive())
+                .limit(9)
+                .collect(Collectors.toList());
+    }
+
     @GetMapping("settings")
-    public ModelAndView getSettings(ModelAndView modelAndView, Principal principal){
+    public ModelAndView getSettings(ModelAndView modelAndView){
         modelAndView.setViewName("control-panel/user/settings");
 
         return modelAndView;
@@ -142,12 +151,8 @@ public class UserController {
                         .filter(DeliveryViewDTO::isActive)
                         .collect(Collectors.toList()));
 
-        modelAndView.addObject("historyDeliveries",
-                deliveryService.getDeliveriesForCurrentUser(principal.getName()).stream()
-                        .filter(delivery->!delivery.isActive())
-                        .collect(Collectors.toList()));
-
         modelAndView.addObject("addresses",userService.getUser(principal.getName()).getAddress());
+        modelAndView.addObject("historySize",deliveryService.getDeliveriesForCurrentUser(principal.getName()).size());
         return modelAndView;
     }
 
@@ -158,9 +163,56 @@ public class UserController {
     }
 
 
-    @GetMapping("deliveries/delete/{id}")
-    public String cancelDelivery(@PathVariable long id){
-        deliveryService.deleteDelivery(id);
+    @GetMapping("deliveries/delete/{deliveryID}")
+    public String cancelDelivery(@PathVariable long deliveryID) {
+        deliveryService.deleteDelivery(deliveryID);
+        return "redirect:/user/deliveries";
+    }
+
+    @GetMapping("deliveries/add-to-history/{deliveryID}/{status}")
+    public String addToHistory(@PathVariable long deliveryID, @PathVariable String status){
+        deliveryService.addToHistory(deliveryID,status);
+        return "redirect:/user/deliveries";
+    }
+
+    @GetMapping("deliveries/history/get-view-page/{viewID}")
+    public String getDeliveryHistory(@PathVariable int viewID,RedirectAttributes redirectAttributes, Principal principal){
+        switch (viewID){
+        case 1 -> redirectAttributes.addFlashAttribute("historyDeliveries",
+                deliveryService.getDeliveriesForCurrentUser(principal.getName()).stream()
+                        .filter(delivery->!delivery.isActive())
+                        .limit(9)
+                        .collect(Collectors.toList()));
+
+        case 2 -> redirectAttributes.addFlashAttribute("historyDeliveries",
+                deliveryService.getDeliveriesForCurrentUser(principal.getName()).stream()
+                        .filter(delivery->!delivery.isActive())
+                        .skip(9)
+                        .limit(18)
+                        .collect(Collectors.toList()));
+
+        case 3 -> redirectAttributes.addFlashAttribute("historyDeliveries",
+                deliveryService.getDeliveriesForCurrentUser(principal.getName()).stream()
+                        .filter(delivery->!delivery.isActive())
+                        .skip(18)
+                        .limit(27)
+                        .collect(Collectors.toList()));
+
+        case 4 -> redirectAttributes.addFlashAttribute("historyDeliveries",
+                deliveryService.getDeliveriesForCurrentUser(principal.getName()).stream()
+                        .filter(delivery->!delivery.isActive())
+                        .skip(27)
+                        .limit(36)
+                        .collect(Collectors.toList()));
+
+        case 5 -> redirectAttributes.addFlashAttribute("historyDeliveries",
+                deliveryService.getDeliveriesForCurrentUser(principal.getName()).stream()
+                        .filter(delivery->!delivery.isActive())
+                        .skip(36)
+                        .limit(45)
+                        .collect(Collectors.toList()));
+        }
+
         return "redirect:/user/deliveries";
     }
 }

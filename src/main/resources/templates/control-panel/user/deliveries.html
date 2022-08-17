@@ -13,32 +13,95 @@
                     <div class="row">
                         <p class="auth-header" style="padding: 10px 0">Active delivery</p>
                     </div>
-                    <!--                    <div class="row">-->
-                    <!--                        <div class="separator"></div>-->
-                    <!--                    </div>-->
 
-                    <div th:if="${activeDeliveries.isEmpty()}">
-                        <div style="text-align: left; font-weight: bold; width: 90%">We dont have active delivery!</div>
-                        <div class="separator"></div>
-                    </div>
+                    <div class="container-fluid" style="padding: 0;">
+
+                        <div class="row" style="font-weight: bold">
+                            <div class="col-xs col-lg-2" style="text-align: left;padding: 0">Received time</div>
+                            <div class="col-xs col-lg-3" style="text-align: left;margin-left: 5%;">Address name</div>
+                            <div class="col-xs col-lg-2" style="text-align: left; padding-left: 0">Total price</div>
+                            <div style="text-align: right; padding-right: 5%;" class="col-xs col-lg-2">Status</div>
+                            <div style="text-align: right; padding-left: 5%" class="col-xs col-lg-2">Delivered</div>
+
+                            <div class="separator"></div>
+                        </div>
+                        <div th:if="${activeDeliveries.isEmpty()}" class="row">
+                            <div style="text-align: left; font-weight: bold; width: 90%; padding: 0">We dont have active delivery!</div>
+                            <div class="separator"></div>
+                        </div>
+
                     <div th:unless="${activeDeliveries.isEmpty()}" class="row" th:each="delivery : ${activeDeliveries}">
-                        <div style="text-align: left; font-weight: bold; width: 90%" th:text="|${delivery.receiveTime}: ${delivery.deliveryAddress.name} ${delivery.totalPrice} ${delivery.deliveryStatus}|"></div>
-                        <div style="float: right; width: 10%"><button class="btn btn-primary btn-sm">Cancel</button></div>
-                        <div class="separator"></div>
+                        <div class="container-fluid" style="padding: 0;">
+                            <div class="row" style="font-weight: bold">
+                                <div th:text="${delivery.receiveTime}" class="col-xs col-lg-3" style="text-align: left;padding: 0"></div>
+                                <div class="col-xs col-lg-2" th:text="${delivery.deliveryAddress.name}" style="text-align: left"></div>
+                                <div th:text="|${delivery.totalPrice} BGN|" class="col-xs col-lg-2" style="text-align: right"></div>
+                                <div th:text="${delivery.deliveryStatus}" style="text-align: right;padding-right: 7%;" class="col-xs col-lg-3"></div>
+                                <div style="text-align: right" class="col-xs col-lg-2">
+                                    <div th:if="${delivery.deliveryStatus}!=${delivery.deliveryStatus.PENDING}">
+                                        <a th:href="@{/deliveries/add-to-history/{deliveryID}/{status}(deliveryID = ${delivery.id},status = 'DELIVERED')}">
+                                            <button class="btn btn-primary btn-sm" style="float: left;margin-right: 5%;padding: 2%;margin-left: 15%;">Yes</button>
+                                        </a>
+                                        <a th:href="@{/deliveries/add-to-history/{deliveryID}/{status}(deliveryID = ${delivery.id},status = 'NOT_DELIVERED')}">
+                                            <button class="btn btn-primary btn-sm" style="float: left;padding: 2%">No</button>
+                                        </a>
+                                    </div>
+                                    <div th:unless="${delivery.deliveryStatus}!=${delivery.deliveryStatus.PENDING}">
+                                        <a th:href="@{/user/deliveries/delete/{deliveryID}(deliveryID=${delivery.id})}"><button class="btn btn-primary btn-sm" style="float: left;margin-right: 5%;padding: 2%;margin-left: 15%;">Cancel</button></a>
+                                    </div>
+                                </div>
+                                <div class="separator"></div>
+                            </div>
+                        </div>
                     </div>
+                    </div>
+
+
                     <div class="row">
                         <p class="auth-header" style="padding: 10px 0">History deliveries</p>
                     </div>
-                    <div th:if="${historyDeliveries.isEmpty()}">
-                        <div style="text-align: left; font-weight: bold; width: 90%">We dont have deliveries history!</div>
+                    <div class="container-fluid" style="padding: 0;">
+                    <div class="row" style="font-weight: bold">
+                        <div class="col-xs col-lg-2" style="text-align: left;padding: 0">Received time</div>
+                        <div class="col-xs col-lg-3" style="text-align: left;margin-left: 5%;">Address name</div>
+                        <div class="col-xs col-lg-2" style="text-align: left; padding-left: 0">Total price</div>
+                        <div style="text-align: right; padding-right: 5%;" class="col-xs col-lg-2">Status</div>
+                        <div style="text-align: right; padding-left: 5%" class="col-xs col-lg-2">Items</div>
+
                         <div class="separator"></div>
                     </div>
+                    <div class="row" th:if="${historyDeliveries.isEmpty()}">
+                        <div style="text-align: left; font-weight: bold; width: 90%; padding: 0">We dont have deliveries history!</div>
+                        <div class="separator"></div>
+                    </div>
+
                     <div th:unless="${historyDeliveries.isEmpty()}" class="row" th:each="delivery : ${historyDeliveries}">
-                        <div style="text-align: left; font-weight: bold; width: 90%" th:text="|${delivery.receiveTime}: ${delivery.deliveryAddress.name} ${delivery.totalPrice}|"></div>
-                        <div class="separator"></div>
+                        <div class="container-fluid">
+                            <div class="row" style="font-weight: bold">
+                                <div th:text="${delivery.receiveTime}" class="col-xs col-lg-3" style="text-align: left;padding: 0"></div>
+                                <div class="col-xs col-lg-2" th:text="${delivery.deliveryAddress.name}" style="text-align: left"></div>
+                                <div th:text="|${delivery.totalPrice} BGN|" class="col-xs col-lg-2" style="text-align: right"></div>
+                                <div th:text="${delivery.deliveryStatus}" style="text-align: right;padding-right: 7%;" class="col-xs col-lg-3"></div>
+                                <div style="text-align: right" class="col-xs col-lg-2">
+                                    <button class="btn btn-primary btn-sm" style="float: left;margin-right: 5%;padding: 2%;margin-left: 15%;">View items</button>
+                                </div>
+                                <div class="separator"></div>
+                            </div>
+                        </div>
                     </div>
+                    </div>
+
                     <div class="bottom-left" style="margin-left: 5%; margin-bottom: 5px">
 
+                        <nav aria-label="...">
+                            <ul class="pagination">
+                                <li class="page-item"><a class="page-link" th:href="@{/user/deliveries/history/get-view-page/{viewID}(viewID=1)}">1</a></li>
+                                <li class="page-item"><a th:if="${historySize}>9" class="page-link" th:href="@{/user/deliveries/history/get-view-page/{viewID}(viewID=2)}">2</a></li>
+                                <li class="page-item"><a th:if="${historySize}>18" class="page-link" th:href="@{/user/deliveries/history/get-view-page/{viewID}(viewID=3)}">3</a></li>
+                                <li class="page-item"><a th:if="${historySize}>27" class="page-link" th:href="@{/user/deliveries/history/get-view-page/{viewID}(viewID=4)}">4</a></li>
+                                <li class="page-item"><a th:if="${historySize}>36" class="page-link" th:href="@{/user/deliveries/history/get-view-page/{viewID}(viewID=5)}">5</a></li>
+                            </ul>
+                        </nav>
                     </div>
 
                     <div class="bottom-right" style="margin-bottom: 2%; left: 65%">
@@ -71,6 +134,19 @@
                         <div th:if="${itemsBag.isEmpty()}" style="font-size: medium; font-weight: bold;">Item bag is empty!</div>
 
                         <div th:unless="${itemsBag.isEmpty()}">
+                            <div class="container-fluid" style="padding: 0; font-size: larger">
+                                <div class="row" style="font-weight: bold">
+                                    <div class="col-xs col-lg-3" style="text-align: left;padding: 0">Name</div>
+                                    <div class="col-xs col-lg-4">
+                                        <div>Count of item</div>
+                                    </div>
+
+                                    <div class="col-xs col-lg-2" style="text-align: right">Price</div>
+                                    <div style="text-align: right" class="col-xs col-lg-3">Total price</div>
+
+                                    <div class="row separator"></div>
+                                </div>
+                            </div>
 
                             <div class="row" th:each="item : ${itemsBag}">
                                 <div class="container-fluid">
@@ -88,8 +164,8 @@
                             </div>
                             </div>
 
-                        <div th:if="${addresses.isEmpty()}" style="padding-top: 5%; font-size: medium; font-weight: bold;">You need to add delivery address! You can do it from profile settings.</div>
-                        <div th:unless="${addresses.isEmpty()}" style="padding-top: 5%">
+                        <div th:if="${addresses.isEmpty()}" style="padding-top: 2%; font-size: medium; font-weight: bold;">You need to add delivery address! You can do it from profile settings.</div>
+                        <div th:unless="${addresses.isEmpty()}" style="padding-top: 2%">
                             <form
                                     th:action="@{/user/deliveries/new/processing}"
                                     th:method="POST">
