@@ -7,16 +7,16 @@
 }
 
     function form_submitAddItem() {
-    document.getElementById("addItemForm").submit();
-}
+        document.getElementById("addItemForm").submit();
+    }
 
 function form_submitEditItem() {
     document.getElementById("editItemModalForm").submit();
 }
 
-    function form_submitEditAddress() {
+function form_submitEditAddress() {
         document.getElementById("editAddressModalForm").submit();
-    }
+}
 
     $(document).ready(function(){
     $('[data-bs-toggle="tooltip"]').tooltip()
