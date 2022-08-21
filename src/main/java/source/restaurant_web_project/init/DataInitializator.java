@@ -2,8 +2,8 @@ package source.restaurant_web_project.init;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import source.restaurant_web_project.configuration.RestaurantContextConfiguration.ConfgurationRepository;
-import source.restaurant_web_project.configuration.RestaurantContextConfiguration.RestaurantConfigurationEntity;
+import source.restaurant_web_project.repository.ConfgurationRepository;
+import source.restaurant_web_project.model.entity.configuration.RestaurantConfigurationEntity;
 import source.restaurant_web_project.configuration.enums.Roles;
 import source.restaurant_web_project.model.entity.Item;
 import source.restaurant_web_project.model.entity.Role;
@@ -41,9 +41,9 @@ public class DataInitializator implements CommandLineRunner {
         }
 
         if(confgurationRepository.count()==0){
-            RestaurantConfigurationEntity restaurantConfiguration = new RestaurantConfigurationEntity();
-            restaurantConfiguration.setConfigured(false);
-            confgurationRepository.save(restaurantConfiguration);
+            RestaurantConfigurationEntity restaurantConfigurationEntity = new RestaurantConfigurationEntity();
+            restaurantConfigurationEntity.setConfigured(false);
+            confgurationRepository.save(restaurantConfigurationEntity);
         }
 
         if(itemRepository.findItemByName("Lunch menu")==null){

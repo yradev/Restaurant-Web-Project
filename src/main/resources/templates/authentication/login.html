@@ -42,13 +42,13 @@
         <div class="row mb-4" style="padding-top: 10px">
             <div class="col d-flex justify-content-center">
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="form2Example31" checked />
-                    <label class="form-check-label" for="form2Example31" style="padding-top: 10px; font-weight: bold" > Remember me </label>
+                    <input class="form-check-input" type="checkbox" name="rememberMe" id="form2Example31" checked />
+                    <label class="form-check-label" for="form2Example31" style="font-weight: bold"> Remember me </label>
                 </div>
             </div>
 
-            <div class="col" style="padding-top: 10px; font-weight: bold">
-                <a th:href="@{/auth/password-reset}" >Forgot password?</a>
+            <div class="col" style="font-weight: bold">
+                <a th:href="@{/auth/password-reset}">Forgot password?</a>
             </div>
         </div>
 

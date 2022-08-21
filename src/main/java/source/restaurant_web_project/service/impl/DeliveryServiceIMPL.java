@@ -9,6 +9,7 @@ import source.restaurant_web_project.model.entity.Delivery;
 import source.restaurant_web_project.model.entity.Item;
 import source.restaurant_web_project.model.entity.User;
 import source.restaurant_web_project.model.entity.enums.DeliveryStatus;
+import source.restaurant_web_project.model.entity.enums.ReservationStatus;
 import source.restaurant_web_project.repository.DeliveryRepository;
 import source.restaurant_web_project.repository.ItemRepository;
 import source.restaurant_web_project.repository.UserRepository;
@@ -182,6 +183,7 @@ public class DeliveryServiceIMPL implements DeliveryService {
     public List<DeliveryViewDTO> getDeliveriesForCurrentUser(String name) {
         return userRepository.findUserByUsername(name).getDeliveries().stream()
                 .map(delivery -> modelMapper.map(delivery, DeliveryViewDTO.class))
+                .sorted((a,b)->b.getReceiveTime().compareTo(a.getReceiveTime()))
                 .collect(Collectors.toList());
     }
 
@@ -195,7 +197,10 @@ public class DeliveryServiceIMPL implements DeliveryService {
 
     @Override
     public List<DeliveryViewDTO> getDeliveriesForStaff() {
-        return deliveryRepository.findAll().stream().map(delivery->modelMapper.map(delivery,DeliveryViewDTO.class)).collect(Collectors.toList());
+        return deliveryRepository.findAll().stream()
+                .map(delivery->modelMapper.map(delivery,DeliveryViewDTO.class))
+                .sorted((a,b)->b.getReceiveTime().compareTo(a.getReceiveTime()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -211,5 +216,28 @@ public class DeliveryServiceIMPL implements DeliveryService {
     @Override
     public List<DeliveryStatus> getActiveDeliveriesNames() {
         return List.of(PENDING,DeliveryStatus.ACCEPTED,DeliveryStatus.TRAVELLING,DeliveryStatus.FEEDBACK);
+    }
+
+    @Override
+    public void changeStatus(long deliveryID, String status) {
+        Delivery delivery = deliveryRepository.findDeliveryById(deliveryID);
+        delivery.setStatus(DeliveryStatus.valueOf(status));
+        deliveryRepository.saveAndFlush(delivery);
+    }
+
+    @Override
+    public Map<String, Integer> getSizeOfActiveDeliveries() {
+        Map<String,Integer> sizeOfActiveDeliveries = new LinkedHashMap<>();
+        for (DeliveryStatus activeDeliveriesStatus : getActiveDeliveriesNames()) {
+            sizeOfActiveDeliveries.put(activeDeliveriesStatus.name(),deliveryRepository.findDeliveriesByStatus(activeDeliveriesStatus).size());
+        }
+
+        return sizeOfActiveDeliveries;
+    }
+
+    @Override
+    public void clearStaffDeliveryHistory() {
+        List<Delivery>deliveries = deliveryRepository.findAll().stream().filter(delivery -> !delivery.isActive()).collect(Collectors.toList());
+        deliveryRepository.saveAllAndFlush(deliveries);
     }
 }

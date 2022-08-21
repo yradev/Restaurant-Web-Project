@@ -1,54 +1,41 @@
-package source.restaurant_web_project.configuration.RestaurantContextConfiguration;
+package source.restaurant_web_project.model.entity.configuration;
 
-import org.springframework.format.annotation.DateTimeFormat;
 import source.restaurant_web_project.configuration.enums.DayOfWeeks;
 import source.restaurant_web_project.configuration.enums.RestaurantStatus;
+import source.restaurant_web_project.model.entity.superClass.BaseEntity;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.validation.constraints.Size;
+import javax.persistence.*;
 import java.time.LocalTime;
 
-public class RestaurantConfigurationDTO {
-    @Size(min=3, max = 20,message = "Restaurant name must be between 3 and 20 chars!")
+@Entity
+@Table(name = "core")
+public class RestaurantConfigurationEntity extends BaseEntity {
     private String name;
-    @Size(max=30,message = "Restaurant description must be max 30 chars!")
+    @Column(columnDefinition = "text")
     private String description;
-
-    @DateTimeFormat(pattern = "HH:mm")
-    private LocalTime openTime;
-    @DateTimeFormat(pattern = "HH:mm")
-    private LocalTime closeTime;
-
     @Enumerated(EnumType.STRING)
     private RestaurantStatus guestsStatus;
     private DayOfWeeks openDay;
+    private LocalTime openTime;
     private DayOfWeeks closeDay;
-
+    private LocalTime closeTime;
     private String firmName;
     @Enumerated(EnumType.STRING)
     private RestaurantStatus deliveryStatus;
-    private boolean configured;
-
-
+    @Column(columnDefinition = "text")
     private String location;
+    private boolean configured;
+    private String ownerNames;
+    private String contactsPhoneNumber;
+
+    public RestaurantConfigurationEntity(){}
 
     public RestaurantStatus getGuestsStatus() {
         return guestsStatus;
     }
 
-    public void setGuestsStatus(RestaurantStatus guestsStatus) {
-        this.guestsStatus = guestsStatus;
-    }
-
-    public RestaurantConfigurationDTO(){}
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setGuestsStatus(RestaurantStatus status) {
+        this.guestsStatus = status;
     }
 
     public String getDescription() {
@@ -57,6 +44,14 @@ public class RestaurantConfigurationDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public LocalTime getOpenTime() {
@@ -83,20 +78,20 @@ public class RestaurantConfigurationDTO {
         this.firmName = firmName;
     }
 
-    public DayOfWeeks getOpenDay() {
-        return openDay;
-    }
-
-    public void setOpenDay(DayOfWeeks openDay) {
-        this.openDay = openDay;
-    }
-
     public DayOfWeeks getCloseDay() {
         return closeDay;
     }
 
     public void setCloseDay(DayOfWeeks closeDay) {
         this.closeDay = closeDay;
+    }
+
+    public DayOfWeeks getOpenDay() {
+        return openDay;
+    }
+
+    public void setOpenDay(DayOfWeeks openDay) {
+        this.openDay = openDay;
     }
 
     public RestaurantStatus getDeliveryStatus() {
@@ -121,5 +116,21 @@ public class RestaurantConfigurationDTO {
 
     public void setConfigured(boolean configured) {
         this.configured = configured;
+    }
+
+    public String getContactsPhoneNumber() {
+        return contactsPhoneNumber;
+    }
+
+    public void setContactsPhoneNumber(String contactsPhoneNumber) {
+        this.contactsPhoneNumber = contactsPhoneNumber;
+    }
+
+    public String getOwnerNames() {
+        return ownerNames;
+    }
+
+    public void setOwnerNames(String ownerNames) {
+        this.ownerNames = ownerNames;
     }
 }

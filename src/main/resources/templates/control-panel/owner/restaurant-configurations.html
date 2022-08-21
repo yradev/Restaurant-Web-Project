@@ -7,11 +7,11 @@
 
 <main>
   <div class="container-fluid justify-content-center d-flex h-100">
-    <div class="row w-100" style="padding: 5% 10%;">
+    <div class="row w-100" style="padding: 4% 10%;">
       <div class="col-xs col-lg-12 list-field">
         <div class="container-fluid h-100" style="width: 60%">
 
-          <p class="auth-header">Configurations</p>
+          <p class="auth-header" style="padding-top: 0">Configurations</p>
 
 
           <form
@@ -79,6 +79,10 @@
                   </select>
                   <label for="deliveryStatus">Deliveries status</label>
                 </div>
+                <div class="form-floating input-group mb-2">
+                  <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" th:field="*{contactsPhoneNumber}" required>
+                  <label for="phoneNumber">Phone for contacts</label>
+                </div>
 
             </div>
               <div class="col-xs col-lg-6">
@@ -101,7 +105,7 @@
                     <option th:each="day : ${dayOfWeeks}" th:value="${day}" th:text="${day}">
                     </option>
                   </select>
-                  <label for="closeDay">Restaurant open at day</label>
+                  <label for="closeDay">Restaurant close at day</label>
                 </div>
 
                 <div class="form-floating mb-2 ">
@@ -115,12 +119,17 @@
 
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16"
                        style="position: absolute;margin:  5% 90%;;"
-                       data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Restaurant location must be max 30 chars!">
+                       data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Restaurant location must be max 50 chars!">
 
                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
                     <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"></path>
                   </svg>
 
+                </div>
+
+                <div class="form-floating input-group mb-2">
+                  <input type="text" class="form-control" id="ownerNames" name="ownerNames" th:field="*{ownerNames}" required>
+                  <label for="ownerNames">Owner`s two names</label>
                 </div>
               </div>
 

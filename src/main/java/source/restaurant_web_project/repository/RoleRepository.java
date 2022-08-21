@@ -7,5 +7,5 @@ import source.restaurant_web_project.model.entity.Role;
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role,Long> {
-    Role getRoleByName(String name);
+    Role findByName(String name);
 }

@@ -6,6 +6,7 @@ import source.restaurant_web_project.model.entity.enums.DeliveryStatus;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public interface DeliveryService {
     boolean addItemToBag(String itemName, BigDecimal price);
@@ -23,4 +24,10 @@ public interface DeliveryService {
     void addToHistory(long deliveryID, String status);
 
     List<DeliveryStatus> getActiveDeliveriesNames();
+
+    void changeStatus(long deliveryID, String status);
+
+    Map<String,Integer> getSizeOfActiveDeliveries();
+
+    void clearStaffDeliveryHistory();
 }

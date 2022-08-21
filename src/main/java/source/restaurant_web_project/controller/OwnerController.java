@@ -5,16 +5,19 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import source.restaurant_web_project.configuration.RestaurantContextConfiguration.RestaurantConfiguration;
-import source.restaurant_web_project.configuration.RestaurantContextConfiguration.RestaurantConfigurationDTO;
+import source.restaurant_web_project.configuration.RestaurantConfiguration;
+import source.restaurant_web_project.model.dto.configuration.RestaurantConfigurationDTO;
 import source.restaurant_web_project.configuration.enums.DayOfWeeks;
 import source.restaurant_web_project.configuration.enums.RestaurantStatus;
+import source.restaurant_web_project.configuration.enums.Roles;
 import source.restaurant_web_project.model.dto.item.CategoryAddDTO;
 import source.restaurant_web_project.model.dto.item.CategoryEditDTO;
 import source.restaurant_web_project.model.dto.item.ItemAddDTO;
 import source.restaurant_web_project.model.dto.item.ItemEditDTO;
+import source.restaurant_web_project.model.dto.user.UserControlDTO;
 import source.restaurant_web_project.model.entity.Category;
 import source.restaurant_web_project.model.entity.Item;
+import source.restaurant_web_project.model.entity.Role;
 import source.restaurant_web_project.service.ItemService;
 import source.restaurant_web_project.service.UserService;
 import source.restaurant_web_project.util.DataValidator;
@@ -24,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 @RequestMapping("owner")
@@ -223,6 +227,44 @@ public class OwnerController {
         redirectAttributes.addFlashAttribute("configured",true);
         restaurantConfiguration.editConfigurations(restaurantConfigurationDTO);
         return "redirect:/owner/configurations";
+    }
+
+    @GetMapping("user-control")
+    public ModelAndView getUserControl(ModelAndView modelAndView){
+        modelAndView.setViewName("control-panel/owner/user-control");
+        return modelAndView;
+    }
+
+    @GetMapping("/user-control/find-user")
+    public String findUser(@RequestParam String username,RedirectAttributes redirectAttributes){
+       UserControlDTO user =  userService.findUserForUserControl(username);
+       if(user==null){
+           redirectAttributes.addFlashAttribute("userNotFound",true);
+           return "redirect:/owner/user-control";
+       }
+
+       List<String> userRoles = user.getRoles().stream().map(Role::getName).filter(role->!role.equals(Roles.ROLE_USER.name())).collect(Collectors.toList());
+
+       redirectAttributes.addFlashAttribute("username",username);
+       redirectAttributes.addFlashAttribute("userRoles",userRoles);
+       redirectAttributes.addFlashAttribute("roles", Stream.of(Roles.values())
+               .map(String::valueOf)
+               .filter(role->!userRoles.contains(role) && !role.equals(Roles.ROLE_USER.toString()))
+               .collect(Collectors.toList()));
+       redirectAttributes.addFlashAttribute("userFound",true);
+        return "redirect:/owner/user-control";
+    }
+
+    @GetMapping("user-control/add-role/{username}/{role}")
+    public String addRole(@PathVariable String username, @PathVariable String role){
+        userService.addRole(username,role);
+        return "redirect:/owner/user-control/find-user?username="+username;
+    }
+
+    @GetMapping("user-control/remove-role/{username}/{role}")
+    public String removeRole(@PathVariable String username, @PathVariable String role){
+        userService.removeRole(username,role);
+        return "redirect:/owner/user-control/find-user?username="+username;
     }
 }
 

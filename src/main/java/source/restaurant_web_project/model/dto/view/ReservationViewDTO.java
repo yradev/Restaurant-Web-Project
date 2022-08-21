@@ -1,36 +1,28 @@
-package source.restaurant_web_project.model.entity;
+package source.restaurant_web_project.model.dto.view;
 
 import source.restaurant_web_project.model.entity.enums.ReservationStatus;
-import source.restaurant_web_project.model.entity.superClass.BaseEntity;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.validation.constraints.Future;
-import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-@Entity
-@Table(name = "reservations")
-public class Reservation extends BaseEntity {
-    private LocalDateTime reservationFor;
+public class ReservationViewDTO {
+    private long id;
+    private String reservationFor;
     private int countOfPersons;
     private ReservationStatus status;
+    private String userUsername;
     private boolean active;
     private String phoneNumber;
 
-    @ManyToOne(targetEntity = User.class)
-    private User user;
+    public ReservationViewDTO(){}
 
-    public Reservation(){}
-
-    public LocalDateTime getReservationFor() {
+    public String getReservationFor() {
         return reservationFor;
     }
 
     public void setReservationFor(LocalDateTime reservationFor) {
-        this.reservationFor = reservationFor;
+
+        this.reservationFor = reservationFor.format(DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm"));
     }
 
     public int getCountOfPersons() {
@@ -49,12 +41,12 @@ public class Reservation extends BaseEntity {
         this.status = status;
     }
 
-    public User getUser() {
-        return user;
+    public String getUserUsername() {
+        return userUsername;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserUsername(String userUsername) {
+        this.userUsername = userUsername;
     }
 
     public boolean isActive() {
@@ -65,6 +57,14 @@ public class Reservation extends BaseEntity {
         this.active = active;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -73,3 +73,4 @@ public class Reservation extends BaseEntity {
         this.phoneNumber = phoneNumber;
     }
 }
+

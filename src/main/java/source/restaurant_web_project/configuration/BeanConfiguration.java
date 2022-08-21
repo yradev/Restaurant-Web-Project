@@ -5,10 +5,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.Properties;
 
 @Configuration
+@EnableScheduling
 public class BeanConfiguration {
 
     @Bean
@@ -26,15 +28,17 @@ public class BeanConfiguration {
     @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("mail.epiclinks.net");
-        mailSender.setPort(26);
+        mailSender.setHost("smtp.abv.bg");
+        mailSender.setPort(465);
 
-        mailSender.setUsername("_mainaccount@epiclinks.net");
-        mailSender.setPassword("anjJx]:HX76P");
+        mailSender.setUsername("epiclinks@abv.bg");
+        mailSender.setPassword("e119220a");
 
         Properties props = mailSender.getJavaMailProperties();
+
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.ssl.enable", "true");
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.debug", "true");
 

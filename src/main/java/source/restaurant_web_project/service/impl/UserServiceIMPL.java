@@ -5,17 +5,18 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
-import source.restaurant_web_project.model.dto.user.UserAddressSettingsDTO;
-import source.restaurant_web_project.model.dto.user.UserChangeEmailDTO;
-import source.restaurant_web_project.model.dto.user.UserPasswordChangeDTO;
-import source.restaurant_web_project.model.dto.user.UserViewSettingsDTO;
+import source.restaurant_web_project.configuration.enums.Roles;
+import source.restaurant_web_project.model.dto.user.*;
 import source.restaurant_web_project.model.entity.Address;
 import source.restaurant_web_project.model.entity.User;
 import source.restaurant_web_project.model.entity.superClass.BaseEntity;
 import source.restaurant_web_project.repository.AddressRepository;
+import source.restaurant_web_project.repository.RoleRepository;
 import source.restaurant_web_project.repository.UserRepository;
 import source.restaurant_web_project.service.UserService;
 import source.restaurant_web_project.util.DataValidator;
+
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceIMPL implements UserService {
@@ -24,11 +25,13 @@ public class UserServiceIMPL implements UserService {
     private final DataValidator dataValidator;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AddressRepository addressRepository;
+    private final RoleRepository roleRepository;
 
-    public UserServiceIMPL(UserRepository userRepository, ModelMapper modelMapper, DataValidator dataValidator, BCryptPasswordEncoder bCryptPasswordEncoder, AddressRepository addressRepository) {
+    public UserServiceIMPL(UserRepository userRepository, ModelMapper modelMapper, DataValidator dataValidator, BCryptPasswordEncoder bCryptPasswordEncoder, AddressRepository addressRepository, RoleRepository roleRepository) {
         this.addressRepository = addressRepository;
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
+        this.roleRepository = roleRepository;
         this.modelMapper.getConfiguration().setPropertyCondition(Conditions.not(a->a.getSource()==null || a.getSource().equals("") || a.getSource().toString().equals("0")));
         this.dataValidator = dataValidator;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
@@ -120,4 +123,23 @@ public class UserServiceIMPL implements UserService {
        addressRepository.saveAndFlush(address);
     }
 
+    @Override
+    public UserControlDTO findUserForUserControl(String username) {
+        User user = userRepository.findUserByUsername(username);
+        return user==null?null:modelMapper.map(user,UserControlDTO.class);
+    }
+
+    @Override
+    public void addRole(String username, String role) {
+        User user = userRepository.findUserByUsername(username);
+        user.getRoles().add(roleRepository.findByName(role));
+        userRepository.saveAndFlush(user);
+    }
+
+    @Override
+    public void removeRole(String username, String role) {
+        User user = userRepository.findUserByUsername(username);
+        user.setRoles(user.getRoles().stream().filter(currentRole->!currentRole.getName().equals(role)).collect(Collectors.toList()));
+        userRepository.saveAndFlush(user);
+    }
 }

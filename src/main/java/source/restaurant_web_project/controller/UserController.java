@@ -10,8 +10,9 @@ import source.restaurant_web_project.model.dto.user.UserChangeEmailDTO;
 import source.restaurant_web_project.model.dto.user.UserPasswordChangeDTO;
 import source.restaurant_web_project.model.dto.user.UserViewSettingsDTO;
 import source.restaurant_web_project.model.dto.view.DeliveryViewDTO;
-import source.restaurant_web_project.model.entity.enums.DeliveryStatus;
+import source.restaurant_web_project.model.dto.view.ReservationViewDTO;
 import source.restaurant_web_project.service.DeliveryService;
+import source.restaurant_web_project.service.ReservationService;
 import source.restaurant_web_project.service.UserService;
 import source.restaurant_web_project.util.DataValidator;
 
@@ -27,11 +28,13 @@ public class UserController {
     private final UserService userService;
     private final DataValidator validator;
     private final DeliveryService deliveryService;
+    private final ReservationService reservationService;
 
-    public UserController(UserService userService, DataValidator validator, DeliveryService deliveryService) {
+    public UserController(UserService userService, DataValidator validator, DeliveryService deliveryService, ReservationService reservationService) {
         this.userService = userService;
         this.validator = validator;
         this.deliveryService = deliveryService;
+        this.reservationService = reservationService;
     }
 
     @ModelAttribute("changeEmail")
@@ -215,4 +218,23 @@ public class UserController {
 
         return "redirect:/user/deliveries";
     }
+
+    @GetMapping("reservations")
+    public ModelAndView getReservations(ModelAndView modelAndView, Principal principal){
+        modelAndView.setViewName("control-panel/user/reservations");
+        modelAndView.addObject("activeReservation",reservationService.getCurrentUserReservations(principal.getName()).stream()
+                .filter(ReservationViewDTO::isActive)
+                .collect(Collectors.toList()));
+        modelAndView.addObject("history",reservationService.getCurrentUserReservations(principal.getName()).stream()
+                .filter(reservation -> !reservation.isActive())
+                .collect(Collectors.toList()));
+        return modelAndView;
+    }
+
+    @GetMapping("reservations/delete/{reservationId}")
+    public String deleteReservation(@PathVariable long reservationId){
+        reservationService.deleteReservation(reservationId);
+        return "redirect:/user/reservations";
+    }
+
 }

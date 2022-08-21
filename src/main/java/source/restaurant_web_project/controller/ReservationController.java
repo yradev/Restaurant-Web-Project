@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import source.restaurant_web_project.model.dto.NewReservationDTO;
+import source.restaurant_web_project.model.dto.view.ReservationViewDTO;
 import source.restaurant_web_project.service.ReservationService;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("reservation")
@@ -30,7 +32,7 @@ public class ReservationController {
     }
 
     @GetMapping
-    public ModelAndView newReservation(ModelAndView modelAndView){
+    public ModelAndView newReservation(ModelAndView modelAndView,Principal principal){
         modelAndView.setViewName("reservation");
         return modelAndView;
     }
@@ -38,11 +40,15 @@ public class ReservationController {
     @PostMapping("new/processing")
     public String addNewReservation(@Valid NewReservationDTO newReservationDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes, Principal principal){
 
+        if(reservationService.getCurrentUserReservations(principal.getName()).stream().anyMatch(ReservationViewDTO::isActive)) {
+            redirectAttributes.addFlashAttribute("tooMuchActiveReservations", true);
+            return "redirect:/reservation";
+        }
+
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("newReservationDTO", newReservationDTO);
             redirectAttributes.addFlashAttribute(
                     "org.springframework.validation.BindingResult.newReservationDTO", bindingResult);
-            redirectAttributes.addFlashAttribute("haveErrorAddCategory",true);
             return "redirect:/reservation";
         }
 

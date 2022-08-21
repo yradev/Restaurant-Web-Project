@@ -1,9 +1,11 @@
-package source.restaurant_web_project.configuration.RestaurantContextConfiguration;
+package source.restaurant_web_project.configuration;
 
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
+import source.restaurant_web_project.model.dto.configuration.RestaurantConfigurationDTO;
+import source.restaurant_web_project.model.entity.configuration.RestaurantConfigurationEntity;
+import source.restaurant_web_project.repository.ConfgurationRepository;
 
 @Component
 public class RestaurantConfiguration {
@@ -25,6 +27,8 @@ public class RestaurantConfiguration {
         RestaurantConfigurationEntity configuration = confgurationRepository.findAll().stream().findFirst().orElse(null);
 
         modelMapper.map(restaurantConfigurationDTO,configuration);
+
+        configuration.setConfigured(true);
 
         confgurationRepository.save(configuration);
     }

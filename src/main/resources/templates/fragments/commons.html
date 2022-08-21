@@ -25,7 +25,7 @@
                             <li ><a href="/" class="nav-link px-2  navigation-item">Home</a></li>
                             <li><a href="/menu" class="nav-link px-2 navigation-item">Menu</a></li>
                             <li><a href="/reservation" class="nav-link px-2 navigation-item">Reservation</a></li>
-                            <li><a href="#" class="nav-link px-2 navigation-item">About us</a></li>
+                            <li><a href="/about-us" class="nav-link px-2 navigation-item">About us</a></li>
                         </ul>
                         <!-- ------------------------------- -->
                     </nav>
@@ -95,7 +95,7 @@
                                 <ul class="dropdown-menu">
                                 <h6 class="dropdown-header">Profile</h6>
                                 <li><a class="dropdown-item" href="/user/settings">Settings</a></li>
-                                <li><a class="dropdown-item" href="#">Reservations</a></li>
+                                <li><a class="dropdown-item" href="/user/reservations">Reservations</a></li>
                                 <li><a class="dropdown-item" href="/user/deliveries">Deliveries</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <div sec:authorize="hasRole('ROLE_STAFF')">
@@ -109,7 +109,7 @@
                                 <div sec:authorize="hasRole('ROLE_OWNER')">
                                     <h6 class="dropdown-header">Core</h6>
                                     <li><a class="dropdown-item" href="/owner/configurations">Core configuration</a></li>
-                                    <li><a class="dropdown-item" href="#">User control</a></li>
+                                    <li><a class="dropdown-item" href="/owner/user-control">User role control</a></li>
                                     <li><a class="dropdown-item" href="/owner/menu">Menu control</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                 </div>
@@ -127,8 +127,8 @@
         <div class="container-fluid h-100">
                 <div class="row">
                 <div class="col-xs col-lg-12">
-                    <div class="centered" th:if="${coreInformation.firmName}==null" th:text="|Empty - All Rights Reserved. ©|"></div>
-                    <div class="centered" th:unless="${coreInformation.firmName}==null" th:text="|${coreInformation.firmName} - All Rights Reserved. ©|"></div>
+                    <div class="centered" th:unless="${coreInformation.isConfigured()}" th:text="|Empty - All Rights Reserved. ©|"></div>
+                    <div class="centered" th:if="${coreInformation.isConfigured()}" th:text="|${coreInformation.firmName} - All Rights Reserved. ©|"></div>
                 </div>
             </div>
         </div>

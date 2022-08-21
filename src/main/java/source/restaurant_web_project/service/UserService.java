@@ -1,10 +1,7 @@
 package source.restaurant_web_project.service;
 
 import org.springframework.validation.BindingResult;
-import source.restaurant_web_project.model.dto.user.UserAddressSettingsDTO;
-import source.restaurant_web_project.model.dto.user.UserChangeEmailDTO;
-import source.restaurant_web_project.model.dto.user.UserPasswordChangeDTO;
-import source.restaurant_web_project.model.dto.user.UserViewSettingsDTO;
+import source.restaurant_web_project.model.dto.user.*;
 import source.restaurant_web_project.model.entity.User;
 
 public interface UserService {
@@ -29,4 +26,10 @@ public interface UserService {
     void addAddress(UserAddressSettingsDTO userAddressSettingsDTO, String name);
 
     void editAddress(UserAddressSettingsDTO userAddressSettingsDTO, BindingResult bindingResult, String name);
+
+    UserControlDTO findUserForUserControl(String username);
+
+    void addRole(String username, String role);
+
+    void removeRole(String username, String role);
 }

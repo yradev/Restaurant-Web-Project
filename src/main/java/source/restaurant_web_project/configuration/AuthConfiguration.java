@@ -56,12 +56,19 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .and()
+                .rememberMe()
+                .rememberMeParameter("rememberMe")
+                .key("remember Me Encryption Key")
+                .rememberMeCookieName("rememberMe")
+                .tokenValiditySeconds(10000)
+                .and()
                     .logout()
                     .logoutUrl("/auth/logout")
                 .logoutSuccessUrl("/auth/login")
                 .invalidateHttpSession(true)
 
                 .deleteCookies("JSESSIONID")
+
                 .and().csrf().disable();
     }
 }

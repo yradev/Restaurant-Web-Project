@@ -15,7 +15,7 @@ public class EmailSender {
     public void send(String to, String subject, String text) {
 
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("system@epiclinks.net");
+        message.setFrom("epiclinks@abv.bg");
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
