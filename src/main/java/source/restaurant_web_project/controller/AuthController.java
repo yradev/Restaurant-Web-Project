@@ -72,7 +72,7 @@ public class AuthController {
             return "redirect:/auth/password-reset";
         }
 
-        emailSender.send(email,"Reset Password",authService.getMessageWithToken(user,request));
+        emailSender.send(email,"Reset Password",authService.getMessageWithToken(user,request.getRequestURL().toString()));
         redirectAttributes.addFlashAttribute("tokenSend",true);
         return "redirect:/auth/password-reset";
     }

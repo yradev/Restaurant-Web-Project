@@ -9,7 +9,6 @@ import source.restaurant_web_project.model.entity.Delivery;
 import source.restaurant_web_project.model.entity.Item;
 import source.restaurant_web_project.model.entity.User;
 import source.restaurant_web_project.model.entity.enums.DeliveryStatus;
-import source.restaurant_web_project.model.entity.enums.ReservationStatus;
 import source.restaurant_web_project.repository.DeliveryRepository;
 import source.restaurant_web_project.repository.ItemRepository;
 import source.restaurant_web_project.repository.UserRepository;

@@ -52,9 +52,14 @@ public class AuthServiceIMPL implements AuthService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findUserByUsername(username);
-        if(user==null || !user.isEnabled()){
+        if(user==null){
             throw new UsernameNotFoundException("Username not found!");
         }
+
+        if(!user.isEnabled()){
+            throw new IllegalAccessError("User is disabled!");
+        }
+
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),
@@ -64,7 +69,7 @@ public class AuthServiceIMPL implements AuthService {
     @Override
     public void register(UserRegisterDTO userRegisterDTO) {
 
-         User user = modelMapper.map(userRegisterDTO,User.class);
+        User user = modelMapper.map(userRegisterDTO,User.class);
         user.setAddress(new ArrayList<>());
         Role role = roleRepository.findByName("ROLE_USER");
         List<Role> roles = List.of(role);
@@ -101,12 +106,12 @@ public class AuthServiceIMPL implements AuthService {
     }
 
     @Override
-    public String getMessageWithToken(User user, HttpServletRequest request) throws MalformedURLException {
+    public String getMessageWithToken(User user, String urlPath) throws MalformedURLException {
         String token = UUID.randomUUID().toString();
         Token passwordChangeToken = new Token(user.getEmail(),token);
         passwordChangeToken.setExpiryDate(LocalDateTime.now().plusMinutes(10));
         tokenRepository.save(passwordChangeToken);
-        URL url = new URL(request.getRequestURL().toString());
+        URL url = new URL(urlPath);
         String urlVerify = String.format("http://%s:%s/auth/password-reset/verify?token=%s&email=%s",url.getHost(),url.getPort(),token,user.getEmail());
         String restaurantName = confgurationRepository.findAll().stream().findFirst().get().getName();
 

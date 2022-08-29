@@ -22,7 +22,7 @@ public interface AuthService extends UserDetailsService {
 
     void restorePassword(String password, String email);
 
-    String getMessageWithToken(User user, HttpServletRequest request) throws MalformedURLException;
+    String getMessageWithToken(User user, String urlPath) throws MalformedURLException;
 
     boolean checkTokenExist(String email);
 

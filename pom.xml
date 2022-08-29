@@ -11,6 +11,7 @@
     <groupId>source</groupId>
     <artifactId>Restaurant_Web_Project</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
     <name>Restaurant Web Project</name>
     <description>Restaurant Web Project</description>
     <properties>
