@@ -74,7 +74,7 @@ public class MenuController {
 
     @GetMapping("items/delete/bag/{itemName}")
     public String deleteCookieFromBag(@PathVariable String itemName){
-        deliveryService.deleteItemFromBag(itemName,itemService.findItem(itemName).getPrice());
+        deliveryService.deleteItemFromBag(itemName);
         String categoryName = itemService.findItem(itemName).getCategory().getName();
         return "redirect:/menu/items/get/"+categoryName;
     }

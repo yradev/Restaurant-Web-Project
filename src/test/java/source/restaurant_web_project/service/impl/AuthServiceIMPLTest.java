@@ -23,6 +23,7 @@ import source.restaurant_web_project.model.entity.Token;
 import source.restaurant_web_project.model.entity.User;
 import source.restaurant_web_project.model.entity.configuration.RestaurantConfigurationEntity;
 import source.restaurant_web_project.repository.*;
+import source.restaurant_web_project.service.AuthService;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -50,7 +51,7 @@ class AuthServiceIMPLTest {
 
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    private AuthServiceIMPL authServiceTest;
+    private AuthService authServiceTest;
 
     private User testUserEntity;
 

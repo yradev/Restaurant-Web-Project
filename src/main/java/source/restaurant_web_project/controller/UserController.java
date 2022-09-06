@@ -5,6 +5,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import source.restaurant_web_project.model.dto.AddNewNewsDTO;
+import source.restaurant_web_project.model.dto.NewDeliveryDTO;
 import source.restaurant_web_project.model.dto.user.UserAddressSettingsDTO;
 import source.restaurant_web_project.model.dto.user.UserChangeEmailDTO;
 import source.restaurant_web_project.model.dto.user.UserPasswordChangeDTO;
@@ -146,6 +148,11 @@ public class UserController {
         return "redirect:/user/settings";
     }
 
+    @ModelAttribute("newDeliveryDTO")
+    public NewDeliveryDTO newDeliveryDTO(){
+        return new NewDeliveryDTO();
+    }
+
     @GetMapping("deliveries")
     public ModelAndView modelAndView(ModelAndView modelAndView,Principal principal){
         modelAndView.setViewName("control-panel/user/deliveries");
@@ -160,8 +167,15 @@ public class UserController {
     }
 
     @PostMapping("deliveries/new/processing")
-    public String newDeliveryProcessing(@RequestParam String deliveryAddressName, Principal principal){
-        deliveryService.addNewDelivery(deliveryAddressName,principal.getName());
+    public String newDeliveryProcessing(@Valid NewDeliveryDTO newDeliveryDTO, BindingResult bindingResult,RedirectAttributes redirectAttributes, Principal principal){
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("newDeliveryDTO", newDeliveryDTO);
+            redirectAttributes.addFlashAttribute(
+                    "org.springframework.validation.BindingResult.newDeliveryDTO", bindingResult);
+            return "redirect:/user/settings";
+        }
+        deliveryService.addNewDelivery(newDeliveryDTO,principal.getName());
         return "redirect:/user/deliveries";
     }
 

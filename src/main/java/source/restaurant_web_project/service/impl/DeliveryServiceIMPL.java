@@ -2,6 +2,7 @@ package source.restaurant_web_project.service.impl;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import source.restaurant_web_project.model.dto.NewDeliveryDTO;
 import source.restaurant_web_project.model.dto.view.DeliveryViewDTO;
 import source.restaurant_web_project.model.dto.view.ItemBagDTO;
 import source.restaurant_web_project.model.entity.Address;
@@ -17,6 +18,7 @@ import source.restaurant_web_project.service.DeliveryService;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -44,7 +46,7 @@ public class DeliveryServiceIMPL implements DeliveryService {
 
     @Override
     public boolean addItemToBag(String itemName,BigDecimal price) {
-        if(getItemsFromBag().size()==14){
+        if(getItemsFromBag().size()>=14){
             return false;
         }
      Cookie cookie =  Arrays.stream(request.getCookies())
@@ -112,7 +114,7 @@ public class DeliveryServiceIMPL implements DeliveryService {
     }
 
     @Override
-    public void deleteItemFromBag(String itemName,BigDecimal price) {
+    public void deleteItemFromBag(String itemName) {
       List<ItemBagDTO> items =  getItemsFromBag();
       StringBuilder cookieValue = new StringBuilder();
 
@@ -143,10 +145,8 @@ public class DeliveryServiceIMPL implements DeliveryService {
     }
 
     @Override
-    public void addNewDelivery(String deliveryAddressName, String name) {
-        Delivery delivery = new Delivery();
-        delivery.setReceiveTime(LocalDateTime.now());
-        delivery.setStatus(PENDING);
+    public void addNewDelivery(@Valid NewDeliveryDTO newDeliveryDTO,String name) {
+        newDeliveryDTO.setReceiveTime(LocalDateTime.now());
 
         Set<Item>items = getItemsFromBag().stream()
                 .map(item->{
@@ -156,18 +156,21 @@ public class DeliveryServiceIMPL implements DeliveryService {
                 })
                 .collect(Collectors.toSet());
 
-        delivery.setItems(items);
-        delivery.setTotalPrice(
+        newDeliveryDTO.setTotalPrice(
                 BigDecimal.valueOf(items.stream().mapToDouble(item->item.getPrice().multiply(BigDecimal.valueOf(item.getCountInBag())).doubleValue()).sum())
         );
 
+        newDeliveryDTO.setStatus(PENDING);
+        newDeliveryDTO.setActive(true);
+
+        Delivery delivery = modelMapper.map(newDeliveryDTO,Delivery.class);
+
         User user = userRepository.findUserByUsername(name);
+        delivery.setItems(items);
         delivery.setDeliver(user);
 
-        Address address = user.getAddress().stream().filter(add->add.getName().equals(deliveryAddressName)).findFirst().orElse(null);
+        Address address = user.getAddress().stream().filter(add->add.getName().equals(newDeliveryDTO.getDeliveryAddressName())).findFirst().orElse(null);
         delivery.setAddress(address);
-
-        delivery.setActive(true);
         deliveryRepository.saveAndFlush(delivery);
 
         Cookie cookie = new Cookie("ItemsBag",null);
