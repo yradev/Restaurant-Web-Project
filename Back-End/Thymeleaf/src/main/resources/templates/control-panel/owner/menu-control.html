@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/commons::head"></head>
+
+<body>
+<header th:replace="fragments/commons::header"></header>
+
+<main>
+    <div class="container-fluid justify-content-center d-flex h-75">
+        <div class="row w-100">
+            <div class="col-xs col-lg-5 list-field w-50">
+                <div class="container-fluid h-100">
+                    <div class="row"><
+                        <p class="auth-header" style="padding: 10px 0">Categories <svg th:if="${haveErrorEditCategory}" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="red" class="bi bi-exclamation-octagon" viewBox="0 0 16 16"
+                                                                                       data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="You have some error in edit!">
+                            <path d="M4.54.146A.5.5 0 0 1 4.893 0h6.214a.5.5 0 0 1 .353.146l4.394 4.394a.5.5 0 0 1 .146.353v6.214a.5.5 0 0 1-.146.353l-4.394 4.394a.5.5 0 0 1-.353.146H4.893a.5.5 0 0 1-.353-.146L.146 11.46A.5.5 0 0 1 0 11.107V4.893a.5.5 0 0 1 .146-.353L4.54.146zM5.1 1 1 5.1v5.8L5.1 15h5.8l4.1-4.1V5.1L10.9 1H5.1z"/>
+                            <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                        </svg></p>
+                    </div>
+                    <p th:if="${categoriesSize}==0">We dont have categories!</p>
+
+                    <div th:each="category,status : ${categories}" class="category-value">
+                        <div class="row separator">
+                            <div class="col-xs m-2 col-lg-6">
+                                <div th:text="|${category.position}. ${category.name}|"></div>
+                            </div>
+
+                            <div class="col-xs m-2 col-lg-5">
+                                <div style="float: right;">
+                                    <button type="button" class="btn btn-primary btn-sm" data-bs-target="#editCategoryModal" data-bs-toggle="modal"
+                                            th:data-bs-categoryName="${category.name}"
+                                            th:data-bs-categoryPosition="${category.position}"
+                                    >Edit</button>
+
+                                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" th:data-bs-target="|#deleteCategoryModal${status.index}|">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!--                            Delete Category Modal-->
+                            <div th:replace="fragments/modals :: deleteCategoryModalFragment"></div>
+                            <!--                            End of delete category modal-->
+
+
+                            <!--                            Modal Edit-->
+                            <div th:replace="fragments/modals :: editCategoryModalFragment"></div>
+                            <!--                            /// End modal-->
+
+                        </div>
+                    </div>
+
+                    <div class="bottom-left" style="margin-left: 25%; margin-bottom: 5px">
+
+                        <nav aria-label="...">
+                            <ul class="pagination">
+                                <li class="page-item"><a class="page-link" th:href="@{/owner/menu/category/get-view-page/{categoryID}(categoryID=1)}">1</a></li>
+                                <li class="page-item" th:if="${categoriesSize}>5"><a class="page-link" th:href="@{/owner/menu/category/get-view-page/{categoryID}(categoryID=2)}">2</a></li>
+                                <li class="page-item" th:if="${categoriesSize}>10"><a class="page-link" th:href="@{/owner/menu/category/get-view-page/{categoryID}(categoryID=3)}">3</a></li>
+                                <li class="page-item" th:if="${categoriesSize}>15"><a class="page-link" th:href="@{/owner/menu/category/get-view-page/{categoryID}(categoryID=4)}">4</a></li>
+                            </ul>
+                        </nav>
+
+                    </div>
+                    <div class="bottom-right" style="margin-right: 25%;">
+                        <div th:if="${categoriesSize}<12">
+
+                            <button th:unless="${haveErrorAddCategory}" style="margin-bottom: 22%" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal" data-bs-placement="right" data-bs-title="You can have max 12 categories!">Add category</button>
+                            <button th:if="${haveErrorAddCategory}" style="margin-bottom: 22%" type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#addCategoryModal" data-bs-placement="right" data-bs-title="We have some errors here!">Add category</button>
+
+                            <!--                            Add category modal-->
+                            <div th:replace="fragments/modals :: addCategoryModalFragment"></div>
+                            <!--                            End of add category modal-->
+
+                        </div>
+
+
+                        <button th:if="${categoriesSize}>=12" type="button" style="margin-bottom: 22%" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="You can add max 12 categories!">
+                            Add category
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!--            Start of item control-->
+
+            <div class="col-xs col-lg-6 list-field w-50">
+                <div class="container-fluid h-100" style="padding: 0 20%;">
+                    <div class="row">
+                        <p class="auth-header" style="padding: 10px 0">Items <svg th:if="${haveErrorEditItem}" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="red" class="bi bi-exclamation-octagon" viewBox="0 0 16 16"
+                                                                                  data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="You have some error in edit!">
+                            <path d="M4.54.146A.5.5 0 0 1 4.893 0h6.214a.5.5 0 0 1 .353.146l4.394 4.394a.5.5 0 0 1 .146.353v6.214a.5.5 0 0 1-.146.353l-4.394 4.394a.5.5 0 0 1-.353.146H4.893a.5.5 0 0 1-.353-.146L.146 11.46A.5.5 0 0 1 0 11.107V4.893a.5.5 0 0 1 .146-.353L4.54.146zM5.1 1 1 5.1v5.8L5.1 15h5.8l4.1-4.1V5.1L10.9 1H5.1z"/>
+                            <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                        </svg></p>
+                    </div>
+
+                    <div th:if="${categoriesSize}==0">
+                        <button type="button" style="margin-bottom: 22%" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="We dont have categories!">Pick category</button>
+                    </div>
+
+                    <div th:if="${categoriesSize}>0">
+
+                        <div class="dropdown" th:if="${categoriesSize}>0">
+                            <button th:unless="${haveCategory}" class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Pick category</button>
+                            <button th:if="${haveCategory}" class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="${currentCategory}"></button>
+                            <ul class="dropdown-menu">
+                                <li th:each="category : ${categoryNames}"><a class="dropdown-item" th:href="@{/owner/menu/item/get-view-page/{viewID}/{categoryName} (viewID=1,categoryName=${category})}" th:text="${category}"></a></li>
+                            </ul>
+                        </div>
+
+                        <div th:if="${itemsAddHaveError}">
+                            <p style="padding: 20px 0">We have errors in add item:</p>
+                            <div th:each="error : ${getItemAddErrors}" class="row">
+                                <p class="alert alert-danger" th:text="${error}"></p>
+                            </div>
+                        </div>
+
+
+                        <div th:if="${haveCategory}">
+                            <div th:if="${categoryEmpty}" class="row">
+                                <p style="padding-top: 30px">We dont have items in this category!</p>
+                            </div>
+
+                            <div th:each="item,status : ${items}" class="category-value" style="padding: 0">
+                                <div class="row separator">
+                                    <div class="col-xs m-2 col-lg-8">
+                                        <div th:text="|${item.position}. ${item.name} - ${item.price} BGN.|"></div>
+                                    </div>
+                                    <div class="col-xs m-2 col-lg-3">
+                                        <div style="float: right;">
+                                            <button type="button" class="btn btn-primary btn-sm" data-bs-target="#editItemModal" data-bs-toggle="modal"
+                                                    th:data-bs-itemViewPage="${currentItemViewPosition}"
+                                                    th:data-bs-currentCategoryName="${currentCategory}"
+                                                    th:data-bs-itemPrice="${item.price}"
+                                                    th:data-bs-itemName="${item.name}"
+                                                    th:data-bs-itemPosition="${item.position}"
+                                                    th:data-bs-itemDescription="${item.description}"
+                                            >Edit</button>
+
+                                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" th:data-bs-target="|#deleteItemModal${status.index}|">
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <!--                            Edit item modal-->
+
+                                <div th:replace="fragments/modals :: editItemModalFragment"></div>
+
+                                <!--                            end of edit item modal-->
+
+                                <!--                            Delete item modal-->
+
+                                <div th:replace="fragments/modals :: deleteItemModalFragment"></div>
+
+                                <!--                            End delete modal-->
+
+
+                            </div>
+
+
+                            <div class="bottom-left" style="margin-left: 25%; margin-bottom: 5px">
+
+                                <nav aria-label="...">
+                                    <ul class="pagination">
+                                        <li  class="page-item"><a class="page-link" th:href="@{/owner/menu/item/get-view-page/{viewID}/{categoryName} (viewID=1,categoryName=${currentCategory})}">1</a></li>
+                                        <li th:if="${ItemsSize}>5" class="page-item"><a class="page-link" th:href="@{/owner/menu/item/get-view-page/{viewID}/{categoryName} (viewID=2,categoryName=${currentCategory})}">2</a></li>
+                                        <li th:if="${ItemsSize}>10" class="page-item"><a class="page-link" th:href="@{/owner/menu/item/get-view-page/{viewID}/{categoryName} (viewID=3,categoryName=${currentCategory})}">3</a></li>
+                                        <li th:if="${ItemsSize}>15" class="page-item"><a class="page-link" th:href="@{/owner/menu/item/get-view-page/{viewID}/{categoryName} (viewID=4,categoryName=${currentCategory})}">4</a></li>
+                                    </ul>
+                                </nav>
+
+                            </div>
+
+
+                            <div class="bottom-right" style="margin-right: 25%;">
+                                <div th:if="${items.size()}<20" >
+                                    <button th:unless="${haveErrorAddItem}" style="margin-bottom: 22%" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addItemModal" th:data-bs-categoryName="${currentCategory}" th:data-bs-itemView="${currentItemViewPosition}" data-bs-placement="right" data-bs-title="You can have max 20 items!"> Add item</button>
+                                    <button th:if="${haveErrorAddItem}"  style="margin-bottom: 22%" type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#addItemModal" th:data-bs-categoryName="${currentCategory}" th:data-bs-itemView="${currentItemViewPosition}" data-bs-placement="right" data-bs-title="We have some errors here!"> Add item</button>
+
+                                </div>
+                                <button th:if="${items.size()}>=20" type="button" style="margin-bottom: 22%" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="You can add max 20 categories!">Add item</button>
+                            </div>
+
+
+                            <!--                                Modal add item-->
+
+                            <div th:replace="fragments/modals :: addItemModalFragment"></div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<footer th:replace="fragments/commons::footer"></footer>
+
+</body>
+</html>

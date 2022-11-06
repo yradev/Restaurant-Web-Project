@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/commons::head"></head>
+
+<body>
+<header th:replace="fragments/commons::header"></header>
+
+<main class="form-background">
+    <div class="container-fluid justify-content-center d-flex">
+        <div class="row w-50">
+            <div class="col-xs m-2 col-lg-12" style="text-align: left">
+                    <p class="auth-header row" style="padding-top: 15%;padding-bottom: 10%;">About us</p>
+                <div class="row" style="font-weight: bold; font-size: x-large">
+                    <div>Restaurant name : <span th:text="${coreInformation.name}"></span></div>
+                </div>
+                <div class="row" style="font-weight: bold; font-size: x-large">
+                    <div>Owner name : <span th:text="${coreInformation.ownerNames}"></span> </div>
+                </div>
+                <div class="row" style="font-weight: bold; font-size: x-large">
+                    <div>Location: <span th:text="${coreInformation.location}"></span> </div>
+                </div>
+                <div class="row" style="font-weight: bold; font-size: x-large">
+                    <div>Phone for contacts: <span th:text="${coreInformation.contactsPhoneNumber}"></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<footer th:replace="fragments/commons::footer"></footer>
+
+</body>
+</html>

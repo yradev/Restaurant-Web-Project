@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<!--Add category modal-->
+
+<div th:fragment="addCategoryModalFragment">
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalHeader" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCategoryModalHeader">New category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+
+                <!--                            ////-->
+                <p class="alert alert-primary">
+                    Fill the form below:
+                </p>
+
+                <form class="mx-auto bg-blur auth-form"
+                      id="addCategoryForm"
+                      th:method="post"
+                      th:action="@{/owner/menu/category/add/processing}"
+                      th:object="${categoryAddDTO}"
+                      style="padding: 0">
+
+                    <div class="form-floating input-group mb-2">
+                        <input type="text" class="form-control" id="addCategoryName" name="name" th:field="*{name}" th:errorclass="is-invalid">
+                        <label for="addCategoryName">Category name</label>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16"
+                             style="position: absolute;margin:  5% 90%;"
+                             data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Category name must be between 3 and 15 chars!">
+
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"></path>
+                        </svg>
+                        <div class="invalid-tooltip" th:if="${#fields.hasErrors('name')}" th:each="e : ${#fields.errors('name')}" th:text="${e}" style="font-size: x-small"></div>
+                    </div>
+
+                <!--                            ///////-->
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button onclick="form_submitAddCategory()" type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!--End of add category modal-->
+
+<!-- delete category modal <- -->
+<div th:fragment="deleteCategoryModalFragment">
+    <div class="modal fade" th:id="|deleteCategoryModal${status.index}|" tabindex="-1" aria-labelledby="deleteCategoryModalHeader" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteCategoryModalHeader">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                If you delete this category, you will delete every item and delivery that are connected to this category!<br><br>
+                Are u sure that you want to delete this category?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a class="btn btn-primary" th:href="@{/owner/menu/category/delete/{categoryName}(categoryName=${category.name})}" role="button">Delete category</a>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+<!--end of delete category modal-->
+
+
+<!--    Category edit modal-->
+
+<div th:fragment="editCategoryModalFragment">
+
+    <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryHeader" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editCategoryHeader">Edit category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <p class="alert alert-primary">
+                        Fill the form below:</p>
+
+
+                    <form class="mx-auto bg-blur auth-form"
+                          id="editCategoryForm"
+                          th:method="post"
+                          th:action="@{/owner/menu/category/edit/processing}"
+                          th:object="${categoryEditDTO}"
+                          style="padding: 0">
+
+                        <div class="form-floating input-group mb-2">
+                            <select class="form-select" id="editCategorySelectPosition"  th:field="*{position}">
+                                <option value="0" selected>Change position of category:</option>
+                                <option th:each="categoryPosition : ${categoryPositionsIds}" th:value="${categoryPosition}" th:text="${categoryPosition}">
+                                </option>
+                            </select>
+                            <label for="editCategorySelectPosition">Category position</label>
+                            <div class="input-group-append form-floating getCategoryPosition" style="width: 35%">
+                                <input type="text" class="form-control" id="editCategoryCurrentPosition" name="currentPosition" disabled>
+                                <label for="editCategoryCurrentPosition">Current position</label>
+                            </div>
+                        </div>
+
+
+                        <div class="form-floating input-group mb-2">
+                            <input type="text" class="form-control" id="editCategoryName" name="name" th:field="*{name}">
+                            <label for="editCategoryName">Category name</label>
+
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16"
+                                 style="position: absolute;margin:  4% 57%;"
+                                 data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Category name must be between 3 and 10 chars!">
+
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                                <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"></path>
+                            </svg>
+
+                            <div class="invalid-tooltip" th:if="${#fields.hasErrors('name')}" th:each="e : ${#fields.errors('name')}" th:text="${e}" style="font-size: x-small"></div>
+
+                            <div class="input-group-append form-floating getCategoryName"  style="width: 35%">
+                                <input type="text" class="form-control" id="editCategoryCurrentName" name="currentName" th:field="*{currentName}" readonly>
+                                <label for="editCategoryCurrentName">Current name</label>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button onclick="form_submitEditCategory()" type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--End edit category modal-->
+
+
+<!--Add item modal-->
+
+<div th:fragment="addItemModalFragment">
+<div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItem-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addItem-label">New item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+
+                <!--                            ////-->
+                <p class="alert alert-primary">
+                    Fill the form below:
+                </p>
+
+                <form class="mx-auto bg-blur auth-form"
+                      id="addItemForm"
+                      th:method="post"
+                      th:action="@{/owner/menu/item/add/processing}"
+                      th:object="${itemAddDTO}"
+                      style="padding: 0">
+
+                    <div class="form-floating mb-2 input-group mb-2">
+                        <input type="text" class="form-control" id="addItemName" name="name" th:field="*{name}" th:errorclass="is-invalid">
+                        <label for="addItemName">Item name</label>
+                        <div class="invalid-tooltip" th:if="${#fields.hasErrors('name')}" th:each="e : ${#fields.errors('name')}" th:text="${e}" style="font-size: x-small"></div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16"
+                             style="position: absolute;margin:  5% 90%;"
+                             data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Item name must be between 3 and 20 chars!">
+
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"></path>
+                        </svg>
+                    </div>
+
+                    <div class="getItemView">
+                        <input type="hidden" name="viewID" value="">
+                    </div>
+
+                    <div class="form-floating input-group mb-2">
+                        <textarea class="form-control" id="addItemNameDescription" style="height: 100px" th:field="*{description}" th:errorclass="is-invalid"></textarea>
+                        <label for="addItemNameDescription">Description</label>
+                        <div class="invalid-tooltip" th:if="${#fields.hasErrors('description')}" th:each="e : ${#fields.errors('description')}" th:text="${e}" style="font-size: x-small"></div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16"
+                             style="position: absolute;margin:  5% 90%;"
+                             data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Description must be max 30 chars!">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+
+                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"></path>
+                        </svg>
+                    </div>
+
+                    <div class="form-floating input-group mb-2">
+                        <input type="number" class="form-control" id="addItemPrice" name="price" th:field="*{price}" th:errorclass="is-invalid">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16"
+                             style="position: absolute;margin:  5% 90%;"
+                             data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Price must be more than 0!">
+
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"></path>
+                        </svg>
+                        <div class="invalid-tooltip" th:if="${#fields.hasErrors('price')}" th:each="e : ${#fields.errors('price')}" th:text="${e}" style="font-size: x-small"></div>
+                        <label for="addItemPrice">Price</label>
+                    </div>
+
+                    <div class="getCategoryName">
+                        <input type="hidden" class="form-control" id="addItemCurrentCategoryName" name="currentCategoryName" th:field="*{categoryName}">
+                    </div>
+                </form>
+
+                <!--                            ///////-->
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button onclick="form_submitAddItem()" type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+<!--End of add item modal-->
+
+
+<!--Delete item modal-->
+
+<div th:fragment="deleteItemModalFragment">
+
+<div class="modal fade" th:id="|deleteItemModal${status.index}|" tabindex="-1" aria-labelledby="deleteItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteItemModalLabel">Delete item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                If you delete this item, you will delete all delivery history from it!<br>
+                We preffer you to edit his values!<br><br>
+                Are u sure that you want to delete this item?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a class="btn btn-primary" th:href="@{/owner/menu/item/delete/{itemName}/{viewID}/{categoryName}(itemName=${item.name},viewID=${currentItemViewPosition},categoryName=${currentCategory})}" role="button">Delete item</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+<!--End of delete item modal-->
+
+
+<!--Edit item modal-->
+
+<div th:fragment="editItemModalFragment">
+
+    <div class="modal fade" id="editItemModal" tabindex="-1" aria-labelledby="editItemHeader" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editItemHeader">Edit category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <p class="alert alert-primary">
+                        Fill the form below:</p>
+
+
+                    <form class="mx-auto bg-blur auth-form"
+                          id="editItemModalForm"
+                          th:method="post"
+                          th:action="@{/owner/menu/item/edit/processing}"
+                          th:object="${itemEditDTO}"
+                          style="padding: 0">
+
+                        <div class="form-floating input-group mb-2">
+                            <select class="form-select" id="editItemSelectPosition"  th:field="*{position}">
+                                <option value="0" selected>Change position of item:</option>
+                                <option th:each="itemPosition : ${itemPositionsIds}" th:value="${itemPosition}" th:text="${itemPosition}">
+                                </option>
+                            </select>
+                            <label for="editItemSelectPosition">Item position</label>
+                            <div class="input-group-append form-floating getItemPosition" style="width: 35%">
+                                <input type="text" class="form-control" id="editItemCurrentPosition" name="currentPosition" disabled>
+                                <label for="editItemCurrentPosition">Current position</label>
+                            </div>
+                        </div>
+
+                        <div class="form-floating input-group mb-2">
+                            <select class="form-select" id="editItemSelectCategory"  th:field="*{category}">
+                                <option value="0" selected>Change position of item:</option>
+                                <option th:each="category : ${categoryNames}" th:value="${category}" th:text="${category}">
+                                </option>
+                            </select>
+                            <label for="editItemSelectCategory">Item category</label>
+                            <div class="input-group-append form-floating getCurrentCategoryName" style="width: 35%">
+                                <input type="text" class="form-control" id="editItemCurrentCategory" name="currentCategory" value="" th:field="*{currentCategory}" readonly  >
+                                <label for="editItemCurrentCategory">Current category</label>
+                            </div>
+                        </div>
+
+                        <div class="form-floating input-group mb-2">
+                            <input type="text" class="form-control" id="editItemName" name="name" th:field="*{name}" th:errorclass="is-invalid">
+                            <label for="editItemName">Item name</label>
+
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16"
+                                 style="position: absolute;margin:  4% 57%;"
+                                 data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Item name must be between 3 and 20 chars!">
+
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                                <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"></path>
+                            </svg>
+
+                            <div class="invalid-tooltip" th:if="${#fields.hasErrors('name')}" th:each="e : ${#fields.errors('name')}" th:text="${e}" style="font-size: x-small"></div>
+
+                            <div class="input-group-append form-floating getItemName"  style="width: 35%">
+                                <input type="text" class="form-control" id="editItemCurrentName" name="currentName" th:field="*{currentItemName}" readonly>
+                                <label for="editItemCurrentName">Current name</label>
+                            </div>
+                        </div>
+
+                        <div class="form-floating input-group mb-2">
+                            <textarea class="form-control" id="editItemDescription" th:field="*{description}" th:errorclass="is-invalid" style="height: 100px"></textarea>
+                            <label for="editItemDescription">Description</label>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16"
+                                 style="position: absolute;margin:  4% 57%;"
+                                 data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Category description must be max 30 chars!">
+
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                                <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"></path>
+                            </svg>
+                            <div class="input-group-append form-floating getItemDescription"  style="width: 35%">
+                                <textarea class="form-control" id="editCategoryEditDescription" name="currentDescription" style="height: 100%" readonly></textarea>
+                                <label for="editCategoryEditDescription" style="font-size: small; font-weight: bold">Current description</label>
+                            </div>
+                        </div>
+
+                        <div class="form-floating input-group mb-2">
+                            <input type="number" class="form-control" id="editItemPrice" name="price" th:field="*{price}" th:errorclass="is-invalid">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-info-circle" viewBox="0 0 16 16"
+                                 style="position: absolute;margin:  5% 90%;"
+                                 data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Price must be more than 0!">
+
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                                <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"></path>
+                            </svg>
+                            <div class="invalid-tooltip" th:if="${#fields.hasErrors('price')}" th:each="e : ${#fields.errors('price')}" th:text="${e}" style="font-size: x-small"></div>
+                            <label for="editItemPrice">Price</label>
+
+                            <div class="input-group-append form-floating getItemPrice"  style="width: 35%">
+                                <input type="text" class="form-control" id="editItemCurrentPrice" name="currentPrice" readonly>
+                                <label for="editItemCurrentPrice" style="font-size: small; font-weight: bold">Current price</label>
+                            </div>
+                        </div>
+
+                        <div class="getItemViewPage">
+                            <input type="number" class="form-control" id="editItemViewPage" name="currentViewPage" value="" th:field="*{currentViewPage}" hidden>
+
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button onclick="form_submitEditItem()" type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--End of edit item modal-->
+</body>
+</html>
