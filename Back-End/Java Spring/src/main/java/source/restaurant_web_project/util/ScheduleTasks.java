@@ -2,11 +2,10 @@ package source.restaurant_web_project.util;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import source.restaurant_web_project.model.entity.Delivery;
-import source.restaurant_web_project.model.entity.Reservation;
-import source.restaurant_web_project.repository.DeliveryRepository;
-import source.restaurant_web_project.repository.ReservationRepository;
-import source.restaurant_web_project.repository.TokenRepository;
+import source.restaurant_web_project.models.entity.Delivery;
+import source.restaurant_web_project.repositories.DeliveryRepository;
+import source.restaurant_web_project.repositories.ReservationRepository;
+import source.restaurant_web_project.repositories.TokenRepository;
 
 import java.util.stream.Collectors;
 

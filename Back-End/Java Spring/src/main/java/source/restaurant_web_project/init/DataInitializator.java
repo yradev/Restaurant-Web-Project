@@ -2,13 +2,14 @@ package source.restaurant_web_project.init;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import source.restaurant_web_project.repository.ConfgurationRepository;
-import source.restaurant_web_project.model.entity.configuration.RestaurantConfigurationEntity;
-import source.restaurant_web_project.configuration.enums.Roles;
-import source.restaurant_web_project.model.entity.Item;
-import source.restaurant_web_project.model.entity.Role;
-import source.restaurant_web_project.repository.ItemRepository;
-import source.restaurant_web_project.repository.RoleRepository;
+import source.restaurant_web_project.repositories.ConfgurationRepository;
+import source.restaurant_web_project.models.entity.configuration.RestaurantConfigurationEntity;
+import source.restaurant_web_project.configurations.enums.Roles;
+import source.restaurant_web_project.models.entity.Item;
+import source.restaurant_web_project.models.entity.Role;
+import source.restaurant_web_project.repositories.ItemRepository;
+import source.restaurant_web_project.repositories.RoleRepository;
+import source.restaurant_web_project.util.EmailSender;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,15 +21,17 @@ public class DataInitializator implements CommandLineRunner {
     private final RoleRepository roleRepository;
     private final ItemRepository itemRepository;
 
-    public DataInitializator(ConfgurationRepository confgurationRepository, RoleRepository roleRepository, ItemRepository itemRepository) {
+    private final EmailSender emailSender;
+    public DataInitializator(ConfgurationRepository confgurationRepository, RoleRepository roleRepository, ItemRepository itemRepository, EmailSender emailSender) {
         this.confgurationRepository = confgurationRepository;
         this.roleRepository = roleRepository;
         this.itemRepository = itemRepository;
+        this.emailSender = emailSender;
     }
 
     @Override
     public void run(String... args) throws Exception {
-        if(roleRepository.count()!= Roles.values().length){
+        if (roleRepository.count() != Roles.values().length) {
             List<String> currentRolesNames = roleRepository.findAll().stream().map(Role::getName).collect(Collectors.toList());
             Arrays.stream(Roles.values())
                     .filter(role -> !currentRolesNames.contains(role.name()))
@@ -40,13 +43,13 @@ public class DataInitializator implements CommandLineRunner {
                     .forEach(roleRepository::save);
         }
 
-        if(confgurationRepository.count()==0){
+        if (confgurationRepository.count() == 0) {
             RestaurantConfigurationEntity restaurantConfigurationEntity = new RestaurantConfigurationEntity();
             restaurantConfigurationEntity.setConfigured(false);
             confgurationRepository.save(restaurantConfigurationEntity);
         }
 
-        if(itemRepository.findItemByName("Lunch menu")==null){
+        if (itemRepository.findItemByName("Lunch menu") == null) {
             Item item = new Item();
             item.setName("Lunch menu");
             itemRepository.save(item);
