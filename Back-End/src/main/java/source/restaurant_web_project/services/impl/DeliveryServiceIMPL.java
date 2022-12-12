@@ -145,7 +145,7 @@ public class DeliveryServiceIMPL implements DeliveryService {
     }
 
     @Override
-    public void addNewDelivery(@Valid NewDeliveryDTO newDeliveryDTO,String name) {
+    public void addNewDelivery(@Valid NewDeliveryDTO newDeliveryDTO,String email) {
         newDeliveryDTO.setReceiveTime(LocalDateTime.now());
 
         Set<Item>items = getItemsFromBag().stream()
@@ -165,7 +165,7 @@ public class DeliveryServiceIMPL implements DeliveryService {
 
         Delivery delivery = modelMapper.map(newDeliveryDTO,Delivery.class);
 
-        User user = userRepository.findUserByUsername(name);
+        User user = userRepository.findUserByEmail(email);
         delivery.setItems(items);
         delivery.setDeliver(user);
 
@@ -182,8 +182,8 @@ public class DeliveryServiceIMPL implements DeliveryService {
     }
 
     @Override
-    public List<DeliveryViewDTO> getDeliveriesForCurrentUser(String name) {
-        return userRepository.findUserByUsername(name).getDeliveries().stream()
+    public List<DeliveryViewDTO> getDeliveriesForCurrentUser(String email) {
+        return userRepository.findUserByEmail(email).getDeliveries().stream()
                 .map(delivery -> modelMapper.map(delivery, DeliveryViewDTO.class))
                 .sorted((a,b)->b.getReceiveTime().compareTo(a.getReceiveTime()))
                 .collect(Collectors.toList());

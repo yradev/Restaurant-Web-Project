@@ -7,7 +7,7 @@ This backend server is based on Java Spring Rest Api.
 
 -  Authentication with roles (user,staff,owner) returning authentication Tooken.
 -  Control of items,users,deliveries,restaurant information and reservations depend of the user role.
--  Reset password when you forgot your password with token.
+-  Reset password when you forgot your password with email token verification.
 -  Get menu items.
 -  Get daily lunchmenu items.
 -  Get active,delivered,history of deliveries.
@@ -16,7 +16,7 @@ This backend server is based on Java Spring Rest Api.
 
 ## Core Information
 
- - Rest tooken is sending via smtp-server used JavaMailSender from spring-boot-starter-mail dependency.
+ - Rest tooken is sending via smtp-server, used JavaMailSender from spring-boot-starter-mail dependency.
  - Using Spring Security with JwtTooken filter for returning Authentication tooken after login or register, using io.jsonwebtoken dependancy.
  - Using ModelMapper for mapping between DTO and Entities
  - Using MySQL database

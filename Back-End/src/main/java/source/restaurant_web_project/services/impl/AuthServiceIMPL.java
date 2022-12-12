@@ -56,7 +56,7 @@ public class AuthServiceIMPL implements AuthService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findUserByUsername(username);
+        User user = userRepository.findUserByEmail(username);
         if (user == null) {
             throw new UsernameNotFoundException("Username not found!");
         }
@@ -66,7 +66,7 @@ public class AuthServiceIMPL implements AuthService {
         }
 
         return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
+                user.getEmail(),
                 user.getPassword(),
                 user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList()));
     }
@@ -88,10 +88,6 @@ public class AuthServiceIMPL implements AuthService {
 
         User user = modelMapper.map(userRegisterDTO, User.class);
 
-        if (userRepository.findUserByUsername(user.getUsername()) != null) {
-            throw new BadCredentialsException("We have user with this username!");
-        }
-
         if (userRepository.findUserByEmail(user.getEmail()) != null) {
             throw new BadCredentialsException("We have user with this email!");
         }
@@ -111,7 +107,7 @@ public class AuthServiceIMPL implements AuthService {
 
         userRepository.save(user);
 
-        return userRepository.findUserByUsername((user.getUsername()));
+        return userRepository.findUserByEmail((user.getEmail()));
     }
 
     @Override

@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface DeliveryRepository extends JpaRepository<Delivery,Long> {
-    List<Delivery>findDeliveriesByDeliver_Username(String username);
+    List<Delivery>findDeliveriesByDeliver_Email(String email);
     Delivery findDeliveryById(long id);
     List<Delivery>findDeliveriesByStatus(DeliveryStatus deliveryStatus);
 }

@@ -38,21 +38,21 @@ public class UserServiceIMPL implements UserService {
 
 
     @Override
-    public User getUser(String name) {
-        return userRepository.findUserByUsername(name);
+    public User getUser(String email) {
+        return userRepository.findUserByEmail(email);
     }
 
     @Override
-    public void changeEmail(UserChangeEmailDTO userSettingsDTO, String name) {
-        User user = userRepository.findUserByUsername(name);
+    public void changeEmail(UserChangeEmailDTO userSettingsDTO, String email) {
+        User user = userRepository.findUserByEmail(email);
         modelMapper.map(userSettingsDTO,user);
 
         userRepository.save(user);
     }
 
     @Override
-    public void changeSettings(UserPasswordChangeDTO userSettingsDTO, String name) {
-        User user = userRepository.findUserByUsername(name);
+    public void changeSettings(UserPasswordChangeDTO userSettingsDTO, String email) {
+        User user = userRepository.findUserByEmail(email);
         modelMapper.map(userSettingsDTO,user);
 
         userRepository.save(user);
@@ -60,8 +60,8 @@ public class UserServiceIMPL implements UserService {
 
 
     @Override
-    public UserViewSettingsDTO getUserSettings(String name) {
-        return modelMapper.map(userRepository.findUserByUsername(name),UserViewSettingsDTO.class);
+    public UserViewSettingsDTO getUserSettings(String email) {
+        return modelMapper.map(userRepository.findUserByEmail(email),UserViewSettingsDTO.class);
     }
 
     @Override
@@ -78,38 +78,38 @@ public class UserServiceIMPL implements UserService {
     }
 
     @Override
-    public BindingResult validateUserChangePassword(UserPasswordChangeDTO userPasswordChangeDTO, BindingResult bindingResult, String name) {
-        User currentUser = userRepository.findUserByUsername(name);
+    public BindingResult validateUserChangePassword(UserPasswordChangeDTO userPasswordChangeDTO, BindingResult bindingResult, String email) {
+        User currentUser = userRepository.findUserByEmail(email);
         bindingResult = dataValidator.validatePasswordChange(userPasswordChangeDTO,bindingResult,currentUser.getPassword());
        return bindingResult;
     }
 
     @Override
-    public void changePassword(UserPasswordChangeDTO userPasswordChangeDTO, String name) {
+    public void changePassword(UserPasswordChangeDTO userPasswordChangeDTO, String email) {
         String encryptedNewPassword = bCryptPasswordEncoder.encode(userPasswordChangeDTO.getPassword());
-        User currentLoggedUser = userRepository.findUserByUsername(name);
+        User currentLoggedUser = userRepository.findUserByEmail(email);
         currentLoggedUser.setPassword(encryptedNewPassword);
         userRepository.saveAndFlush(currentLoggedUser);
     }
 
     @Override
-    public BindingResult validateAddress(UserAddressSettingsDTO userAddressSettingsDTO, BindingResult bindingResult, String username) {
-        User user = userRepository.findUserByUsername(username);
+    public BindingResult validateAddress(UserAddressSettingsDTO userAddressSettingsDTO, BindingResult bindingResult, String email) {
+        User user = userRepository.findUserByEmail(email);
 
         return dataValidator.validateAddressAdd(bindingResult,userAddressSettingsDTO,user.getAddress());
     }
 
     @Override
-    public void addAddress(UserAddressSettingsDTO userAddressSettingsDTO, String name) {
-        User user = userRepository.findUserByUsername(name);
+    public void addAddress(UserAddressSettingsDTO userAddressSettingsDTO, String email) {
+        User user = userRepository.findUserByEmail(email);
         Address address = modelMapper.map(userAddressSettingsDTO,Address.class);
         address.setUser(user);
         addressRepository.saveAndFlush(address);
     }
 
     @Override
-    public void editAddress(UserAddressSettingsDTO userAddressSettingsDTO, BindingResult bindingResult, String name) {
-        Long id = userRepository.findUserByUsername(name).getAddress().stream()
+    public void editAddress(UserAddressSettingsDTO userAddressSettingsDTO, BindingResult bindingResult, String email) {
+        Long id = userRepository.findUserByEmail(email).getAddress().stream()
                 .filter(a->a.getName()
                         .equals(userAddressSettingsDTO.getCurrentName()))
                 .map(BaseEntity::getId)
@@ -117,27 +117,27 @@ public class UserServiceIMPL implements UserService {
 
         Address address = addressRepository.findAddressById(id);
        modelMapper.map(userAddressSettingsDTO,address);
-       User user = userRepository.findUserByUsername(name);
+       User user = userRepository.findUserByEmail(email);
        address.setUser(user);
        addressRepository.saveAndFlush(address);
     }
 
     @Override
-    public UserControlDTO findUserForUserControl(String username) {
-        User user = userRepository.findUserByUsername(username);
+    public UserControlDTO findUserForUserControl(String email) {
+        User user = userRepository.findUserByEmail(email);
         return user==null?null:modelMapper.map(user,UserControlDTO.class);
     }
 
     @Override
-    public void addRole(String username, String role) {
-        User user = userRepository.findUserByUsername(username);
+    public void addRole(String email, String role) {
+        User user = userRepository.findUserByEmail(email);
         user.getRoles().add(roleRepository.findByName(role));
         userRepository.saveAndFlush(user);
     }
 
     @Override
-    public void removeRole(String username, String role) {
-        User user = userRepository.findUserByUsername(username);
+    public void removeRole(String email, String role) {
+        User user = userRepository.findUserByEmail(email);
         user.setRoles(user.getRoles().stream().filter(currentRole->!currentRole.getName().equals(role)).collect(Collectors.toList()));
         userRepository.saveAndFlush(user);
     }

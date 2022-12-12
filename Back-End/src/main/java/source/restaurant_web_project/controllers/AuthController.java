@@ -33,7 +33,7 @@ public class AuthController {
         try {
             Authentication authentication = authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            request.getUsername(), request.getPassword()));
+                            request.getEmail(), request.getPassword()));
 
             String accessToken = jwtUtil.generateAccessToken(authentication.getName());
 
@@ -48,7 +48,7 @@ public class AuthController {
     public ResponseEntity<String> register(@RequestBody @Valid UserRegisterDTO userRegisterDTO) {
         try {
             User user = authService.register(userRegisterDTO);
-            String accessToken = jwtUtil.generateAccessToken(user.getUsername());
+            String accessToken = jwtUtil.generateAccessToken(user.getEmail());
 
             return ResponseEntity.ok().body(accessToken);
 
@@ -75,10 +75,10 @@ public class AuthController {
                 : ResponseEntity.badRequest().body("Tooken doesnt exist!");
     }
 
-    @PostMapping("reset-password")
-    public ResponseEntity<String> resetPassword(@RequestBody @Valid ResetPasswordDTO resetPasswordDTO) {
+    @PutMapping("reset-password/{email}")
+    public ResponseEntity<String> resetPassword(@PathVariable String email,@RequestBody @Valid ResetPasswordDTO resetPasswordDTO) {
         try {
-            authService.resetPassword(resetPasswordDTO.getEmail(), resetPasswordDTO.getPassword());
+            authService.resetPassword(email, resetPasswordDTO.getPassword());
            return ResponseEntity.ok().build();
         } catch (BadCredentialsException exception) {
           return ResponseEntity.badRequest().body(exception.getMessage());

@@ -29,9 +29,9 @@ public class ReservationServiceIMPL implements ReservationService {
     }
 
     @Override
-    public void reserve(NewReservationDTO newReservationDTO, String name) {
+    public void reserve(NewReservationDTO newReservationDTO, String email) {
         Reservation reservation = modelMapper.map(newReservationDTO, Reservation.class);
-        User user = userRepository.findUserByUsername(name);
+        User user = userRepository.findUserByEmail(email);
         reservation.setStatus(ReservationStatus.PENDING);
         reservation.setUser(user);
         reservation.setActive(true);
@@ -40,7 +40,7 @@ public class ReservationServiceIMPL implements ReservationService {
 
     @Override
     public List<ReservationViewDTO> getCurrentUserReservations(String username) {
-        return reservationRepository.findReservationsByUser_Username(username).stream()
+        return reservationRepository.findReservationsByUser_Email(username).stream()
                 .map(reservation -> modelMapper.map(reservation,ReservationViewDTO.class))
                 .collect(Collectors.toList());
     }

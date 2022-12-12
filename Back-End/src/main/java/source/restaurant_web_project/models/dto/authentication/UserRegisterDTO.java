@@ -3,21 +3,12 @@ package source.restaurant_web_project.models.dto.authentication;
 import javax.validation.constraints.*;
 
 public class UserRegisterDTO {
-    @Size(min=3, max=10, message = "Username must be between 3 and 10 symbols!")
-    private String username;
+    @Email
+    private String email;
     @Size(min = 5, message = "Password must be at least 5 symbols!")
     private String password;
-    private String email;
 
     public UserRegisterDTO(){}
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     public String getPassword() {
         return password;
