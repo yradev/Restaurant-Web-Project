@@ -68,17 +68,10 @@ public class AuthController {
         }
     }
 
-    @PostMapping("reset-password/verification/verify")
-    public ResponseEntity<String> verifyTooken(@RequestBody VerifyResetPasswordTokenDTO verifyResetPasswordTokenDTO) {
-        return authService.verifyToken(verifyResetPasswordTokenDTO.getTooken(), verifyResetPasswordTokenDTO.getEmail())
-                ? ResponseEntity.ok().build()
-                : ResponseEntity.badRequest().body("Tooken doesnt exist!");
-    }
-
     @PutMapping("reset-password/{email}")
-    public ResponseEntity<String> resetPassword(@PathVariable String email,@RequestBody @Valid ResetPasswordDTO resetPasswordDTO) {
+    public ResponseEntity<String> resetPassword(@PathVariable String email, @RequestBody @Valid ResetPasswordDTO resetPasswordDTO) {
         try {
-            authService.resetPassword(email, resetPasswordDTO.getPassword());
+            authService.resetPassword(resetPasswordDTO.getToken(), email, resetPasswordDTO.getPassword());
            return ResponseEntity.ok().build();
         } catch (BadCredentialsException exception) {
           return ResponseEntity.badRequest().body(exception.getMessage());

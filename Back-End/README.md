@@ -26,11 +26,10 @@ This backend server is based on Java Spring Rest Api.
 
 ## Paths
 ### Authentication
-- POST `/login , Object.of(String email, String password)` Returns auth token (Tooken must be in header with name "Authorization").
-- POST `/register , Object.of(String email, String password)` Returns auth token (Tooken must be in header with name "Authorization"). Email must be valid! Password must be at least 5 symbols!
-- POST `/reset-password/verification/send , Object.of(String email, String url)` Url must be the link of path that will be generated in email etc if your path url is "127.0.0.1/reset-password/verify-token", client will receive email with url for verification -> "http://127.0.0.1/reset-password/verify?token=%s&email=%s".
- - POST `/reset-password/verification/verify , Object.of(String email, String tooken)` Returns true or false.
- - PUT `/reset-password/{email} , Object.of(String newPassword)` Password must be at least 5 symbols!
+- POST `/auth/login , Object.of(String email, String password)` Returns auth token (Tooken must be in header with name "Authorization").
+- POST `/auth/register , Object.of(String email, String password)` Returns auth token (Tooken must be in header with name "Authorization"). Email must be valid! Password must be at least 5 symbols!
+- POST `/auth/reset-password/verification/send , Object.of(String email, String url)` Url must be the link of path that will be generated in email etc if your path url is "127.0.0.1/reset-password/verify-token", client will receive email with url for verification -> "http://127.0.0.1/reset-password/verify?token=%s&email=%s".
+ - PUT `/auth/reset-password/{email} , Object.of(String newPassword, String tooken)` Password must be at least 5 symbols!
 
 
 

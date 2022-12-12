@@ -43,7 +43,7 @@ public class AuthConfiguration {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeRequests()
-                .antMatchers(HttpMethod.POST,"/auth/**").anonymous()
+                .antMatchers("/auth/**").anonymous()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);

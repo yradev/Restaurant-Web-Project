@@ -111,33 +111,31 @@ public class AuthServiceIMPL implements AuthService {
     }
 
     @Override
-    public void resetPassword(String email, String password) {
-
-        String encrPassword = bCryptPasswordEncoder.encode(password);
-
-        User user = userRepository.findUserByEmail(email);
-
-        if(user==null){
-            throw new BadCredentialsException(String.format("User with email %s doesnt exist!",email));
-        }
-        user.setPassword(encrPassword);
-        userRepository.save(user);
-        Token token = tokenRepository.findPasswordResetTokenByEmail(email);
-        tokenRepository.delete(token);
-    }
-
-    @Override
     public void sendVerifyMessage(String email, String url) {
         if(userRepository.findUserByEmail(email)==null){
             throw new BadCredentialsException(String.format("We dont have user with email %s!",email));
         }
 
-        String token = UUID.randomUUID().toString();
-        Token passwordChangeToken = new Token(email, token);
-        passwordChangeToken.setExpiryDate(LocalDateTime.now().plusMinutes(10));
-        tokenRepository.save(passwordChangeToken);
+        Token passwordChangeToken = tokenRepository.findPasswordResetTokenByEmail(email);
 
-        String urlVerify = String.format("%s?token=%s&email=%s", url, token, email);
+        if(passwordChangeToken != null){
+            if (LocalDateTime.now().isAfter(passwordChangeToken.getExpiryDate())) {
+                tokenRepository.delete(passwordChangeToken);
+            }else{
+                throw new BadCredentialsException("We have active token!");
+            }
+        }
+
+            String token = UUID.randomUUID().toString();
+            passwordChangeToken = new Token(email, token);
+            passwordChangeToken.setExpiryDate(LocalDateTime.now().plusMinutes(10));
+            tokenRepository.save(passwordChangeToken);
+
+
+
+
+
+        String urlVerify = String.format("%s?token=%s&email=%s", url, passwordChangeToken.getToken(), email);
         String restaurantName = confgurationRepository.findAll().stream().findFirst().get().getName();
 
         String message = String.format("""
@@ -159,18 +157,28 @@ public class AuthServiceIMPL implements AuthService {
     }
 
     @Override
-    public boolean verifyToken(String token, String email) {
+    public void resetPassword(String token, String email, String password) {
         Token currToken = tokenRepository.findPasswordResetTokenByEmailAndToken(email, token);
 
         if(currToken==null){
-            return false;
+            throw new BadCredentialsException("Invalid token!");
         }
 
         if (LocalDateTime.now().isAfter(currToken.getExpiryDate())) {
             tokenRepository.delete(currToken);
-            return false;
+            throw new BadCredentialsException("Invalid token!");
         }
 
-        return true;
+        String encrPassword = bCryptPasswordEncoder.encode(password);
+
+        User user = userRepository.findUserByEmail(email);
+
+        if(user==null){
+            throw new BadCredentialsException(String.format("User with email %s doesnt exist!",email));
+        }
+        user.setPassword(encrPassword);
+        userRepository.save(user);
+
+        tokenRepository.delete(currToken);
     }
 }

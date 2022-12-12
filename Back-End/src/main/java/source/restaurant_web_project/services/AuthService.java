@@ -19,9 +19,7 @@ public interface AuthService extends UserDetailsService {
 
     void sendVerifyMessage(String email, String url);
 
-    boolean verifyToken(String token, String email);
-
-    void resetPassword(String password, String email);
+    void resetPassword(String token, String email, String password);
 
 
 
