@@ -27,7 +27,7 @@ This backend server is based on Java Spring Rest Api.
 ## Paths
 ### Authentication
 - POST `/auth/login, Body`: Authenticate in backend server. <details>**Returns:** `JWT Token` <br />**Header name:** `Authorization` <br /> **Body:** `username, password`</details>
-- POST `/auth/register, Body` Register new user. <details>Returns:** `JWT Token` <br />**Header name:** `Authorization` <br \> **Body:** `username, password` <br \> **Validations**: </details>
+- POST `/auth/register, Body` Register new user. <details>**Returns:** `JWT Token` <br />**Header name:** `Authorization` <br /> **Body:** `username, password` <br /> **Validations**: </details>
 - POST `/auth/reset-password/verification/send , Object.of(String email, String url)` Url must be the link of path that will be generated in email etc if your path url is "127.0.0.1/reset-password/verify-token", client will receive email with url for verification -> "http://127.0.0.1/reset-password/verify?token=%s&email=%s".<details style="display: inline">"wqrq</details>
 - PUT `/auth/reset-password/{email} , Object.of(String newPassword, String token)` Password must be at least 5 symbols! <details style="display: inline">"wqrq</details>
 ### Restaurant core (OWNER role)
