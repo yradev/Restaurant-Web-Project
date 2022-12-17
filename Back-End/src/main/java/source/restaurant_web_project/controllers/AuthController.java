@@ -9,11 +9,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import source.restaurant_web_project.configurations.authentication.JwtTokenUtil;
 import source.restaurant_web_project.models.dto.authentication.*;
-import source.restaurant_web_project.models.entity.User;
 import source.restaurant_web_project.services.AuthService;
 
 import javax.validation.Valid;
-import java.security.Principal;
 
 @RestController
 @RequestMapping("/auth")
@@ -36,7 +34,6 @@ public class AuthController {
                             request.getEmail(), request.getPassword()));
 
             String accessToken = jwtUtil.generateAccessToken(authentication.getName());
-
             return ResponseEntity.ok().body(accessToken);
 
         } catch (IllegalArgumentException ex) {
@@ -47,8 +44,8 @@ public class AuthController {
     @PostMapping("register")
     public ResponseEntity<String> register(@RequestBody @Valid UserRegisterDTO userRegisterDTO) {
         try {
-            User user = authService.register(userRegisterDTO);
-            String accessToken = jwtUtil.generateAccessToken(user.getEmail());
+            authService.register(userRegisterDTO);
+            String accessToken = jwtUtil.generateAccessToken(userRegisterDTO.getPassword());
 
             return ResponseEntity.ok().body(accessToken);
 

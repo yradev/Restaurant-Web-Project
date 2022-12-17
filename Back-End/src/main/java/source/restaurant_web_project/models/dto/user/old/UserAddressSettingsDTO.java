@@ -1,4 +1,4 @@
-package source.restaurant_web_project.models.dto.user;
+package source.restaurant_web_project.models.dto.user.old;
 
 
 public class UserAddressSettingsDTO {

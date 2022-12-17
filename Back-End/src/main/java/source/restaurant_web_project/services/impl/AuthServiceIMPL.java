@@ -11,12 +11,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
-import source.restaurant_web_project.repositories.ConfgurationRepository;
+import source.restaurant_web_project.errors.DisabledUserException;
+import source.restaurant_web_project.repositories.RestaurantConfigurationRepository;
 import source.restaurant_web_project.models.dto.authentication.UserRegisterDTO;
 import source.restaurant_web_project.models.entity.Role;
 import source.restaurant_web_project.models.entity.Token;
 import source.restaurant_web_project.models.entity.User;
-import source.restaurant_web_project.repositories.AddressRepository;
 import source.restaurant_web_project.repositories.RoleRepository;
 import source.restaurant_web_project.repositories.TokenRepository;
 import source.restaurant_web_project.repositories.UserRepository;
@@ -38,18 +38,16 @@ public class AuthServiceIMPL implements AuthService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ModelMapper modelMapper;
     private final RoleRepository roleRepository;
-    private final AddressRepository addressRepository;
-    private final ConfgurationRepository confgurationRepository;
+    private final RestaurantConfigurationRepository confgurationRepository;
 
     @Autowired
-    public AuthServiceIMPL(TokenRepository passwordResetTokenRepository, UserRepository userRepository, EmailSender emailSender, BCryptPasswordEncoder bCryptPasswordEncoder, ModelMapper modelMapper, RoleRepository roleRepository, AddressRepository addressRepository, ConfgurationRepository confgurationRepository) {
+    public AuthServiceIMPL(TokenRepository passwordResetTokenRepository, UserRepository userRepository, EmailSender emailSender, BCryptPasswordEncoder bCryptPasswordEncoder, ModelMapper modelMapper, RoleRepository roleRepository, RestaurantConfigurationRepository confgurationRepository) {
         this.tokenRepository = passwordResetTokenRepository;
         this.userRepository = userRepository;
         this.emailSender = emailSender;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.modelMapper = modelMapper;
         this.roleRepository = roleRepository;
-        this.addressRepository = addressRepository;
         this.confgurationRepository = confgurationRepository;
     }
 
@@ -62,7 +60,7 @@ public class AuthServiceIMPL implements AuthService {
         }
 
         if (!user.isEnabled()) {
-            throw new IllegalAccessError("User is disabled!");
+            throw new DisabledUserException("User is disabled!");
         }
 
         return new org.springframework.security.core.userdetails.User(
@@ -84,7 +82,7 @@ public class AuthServiceIMPL implements AuthService {
     }
 
     @Override
-    public User register(UserRegisterDTO userRegisterDTO) {
+    public void register(UserRegisterDTO userRegisterDTO) {
 
         User user = modelMapper.map(userRegisterDTO, User.class);
 
@@ -106,8 +104,6 @@ public class AuthServiceIMPL implements AuthService {
         user.setRoles(roles);
 
         userRepository.save(user);
-
-        return userRepository.findUserByEmail((user.getEmail()));
     }
 
     @Override
@@ -130,10 +126,6 @@ public class AuthServiceIMPL implements AuthService {
             passwordChangeToken = new Token(email, token);
             passwordChangeToken.setExpiryDate(LocalDateTime.now().plusMinutes(10));
             tokenRepository.save(passwordChangeToken);
-
-
-
-
 
         String urlVerify = String.format("%s?token=%s&email=%s", url, passwordChangeToken.getToken(), email);
         String restaurantName = confgurationRepository.findAll().stream().findFirst().get().getName();

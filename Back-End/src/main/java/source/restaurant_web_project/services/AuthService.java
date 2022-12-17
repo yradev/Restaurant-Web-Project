@@ -13,7 +13,7 @@ public interface AuthService extends UserDetailsService {
     @Override
     UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 
-    User register(UserRegisterDTO userRegisterDTO);
+    void register(UserRegisterDTO userRegisterDTO);
 
     void login(String token, HttpServletRequest request, UserDetails userDetails);
 
