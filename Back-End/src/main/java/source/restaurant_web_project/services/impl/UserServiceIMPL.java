@@ -51,7 +51,7 @@ public class UserServiceIMPL implements UserService {
     public void editUserData(UserEditDTO userEditDTO) {
         User currUser = userRepository.findUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        if (!currUser.getEmail().equals(userEditDTO.getEmail())) {
+        if (!currUser.getEmail().equals(userEditDTO.getEmail()) && userEditDTO.getEmail()!=null) {
             if (userRepository.findUserByEmail(userEditDTO.getEmail()) != null) {
                 throw new BadCredentialsException("We have user with this email!");
             }

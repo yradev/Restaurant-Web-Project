@@ -10,7 +10,6 @@ import source.restaurant_web_project.models.dto.user.UserEditDTO;
 import source.restaurant_web_project.services.UserService;
 
 import java.security.Principal;
-import java.util.List;
 
 @RestController
 public class UserController {

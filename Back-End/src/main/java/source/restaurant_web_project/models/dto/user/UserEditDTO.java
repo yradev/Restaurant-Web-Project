@@ -1,10 +1,15 @@
 package source.restaurant_web_project.models.dto.user;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Size;
 import java.util.List;
 
-public class UserEditDTO {
+public class UserEditDTO
+{
+    @Email
     private String email;
     private String oldPassword;
+    @Size(min = 5, message = "Password must be at least 5 symbols!")
     private String newPassword;
     private List<AddressDTO> address;
 
