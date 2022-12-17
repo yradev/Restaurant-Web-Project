@@ -27,9 +27,9 @@ This backend server is based on Java Spring Rest Api.
 ## Paths
 ### Authentication
 - POST `/auth/login, Object`: Returns auth token. <details style="display: inline">"wqrq</details>
-- POST `/auth/register , Object.of(String email, String password)` Returns auth token (Token must be in header with name "Authorization"). Email must be valid! Password must be at least 5 symbols!
-- POST `/auth/reset-password/verification/send , Object.of(String email, String url)` Url must be the link of path that will be generated in email etc if your path url is "127.0.0.1/reset-password/verify-token", client will receive email with url for verification -> "http://127.0.0.1/reset-password/verify?token=%s&email=%s".
-- PUT `/auth/reset-password/{email} , Object.of(String newPassword, String token)` Password must be at least 5 symbols!
+- POST `/auth/register , Object.of(String email, String password)` Returns auth token (Token must be in header with name "Authorization"). Email must be valid! Password must be at least 5 symbols!<details style="display: inline">"wqrq</details>
+- POST `/auth/reset-password/verification/send , Object.of(String email, String url)` Url must be the link of path that will be generated in email etc if your path url is "127.0.0.1/reset-password/verify-token", client will receive email with url for verification -> "http://127.0.0.1/reset-password/verify?token=%s&email=%s".<details style="display: inline">"wqrq</details>
+- PUT `/auth/reset-password/{email} , Object.of(String newPassword, String token)` Password must be at least 5 symbols! <details style="display: inline">"wqrq</details>
 ### Restaurant core (OWNER role)
 
 - GET `/core/get-data` return json with restaurant core information
