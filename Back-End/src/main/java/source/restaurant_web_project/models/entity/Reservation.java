@@ -14,7 +14,6 @@ public class Reservation extends BaseEntity {
     private LocalDateTime reservationFor;
     private int countOfPersons;
     private ReservationStatus status;
-    private boolean active;
     private String phoneNumber;
 
     @ManyToOne(targetEntity = User.class)
@@ -52,14 +51,6 @@ public class Reservation extends BaseEntity {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     public String getPhoneNumber() {

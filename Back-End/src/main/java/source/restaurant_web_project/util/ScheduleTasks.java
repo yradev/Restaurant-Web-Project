@@ -28,9 +28,6 @@ public class ScheduleTasks {
 
     @Scheduled(cron = "0 10 3 * * ?")
     public void cleanPendingDeliveries(){
-      deliveryRepository.deleteAll(deliveryRepository.findAll().stream()
-                .filter(Delivery::isActive)
-                .collect(Collectors.toList()));
     }
 
 }

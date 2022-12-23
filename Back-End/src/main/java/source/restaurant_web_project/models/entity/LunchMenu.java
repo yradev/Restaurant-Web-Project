@@ -4,8 +4,10 @@ import source.restaurant_web_project.models.entity.enums.LunchMenuStatus;
 import source.restaurant_web_project.models.entity.superClass.BaseEntity;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 public class LunchMenu extends BaseEntity {

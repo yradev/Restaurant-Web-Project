@@ -1,10 +1,11 @@
 package source.restaurant_web_project.models.dto.user;
 
+import org.springframework.hateoas.RepresentationModel;
 import source.restaurant_web_project.models.entity.Role;
 
 import java.util.List;
 
-public class UserControlDTO {
+public class UserControlDTO extends RepresentationModel<UserControlDTO> {
     private boolean enabled;
     private List<RoleDTO>  roles;
 

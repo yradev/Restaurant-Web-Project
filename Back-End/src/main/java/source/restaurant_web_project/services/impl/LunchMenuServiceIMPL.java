@@ -2,10 +2,13 @@ package source.restaurant_web_project.services.impl;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import source.restaurant_web_project.models.dto.item.LunchMenuAddDTO;
-import source.restaurant_web_project.models.dto.view.LunchMenuViewDTO;
+import source.restaurant_web_project.errors.BadRequestException;
+import source.restaurant_web_project.errors.NoContentException;
+import source.restaurant_web_project.models.dto.lunchmenu.LunchMenuAddDTO;
+import source.restaurant_web_project.models.dto.lunchmenu.LunchMenuViewDTO;
 import source.restaurant_web_project.models.entity.Item;
 import source.restaurant_web_project.models.entity.LunchMenu;
+import source.restaurant_web_project.models.entity.enums.LunchMenuStatus;
 import source.restaurant_web_project.repositories.ItemRepository;
 import source.restaurant_web_project.repositories.LunchMenuRepository;
 import source.restaurant_web_project.services.LunchMenuService;
@@ -31,8 +34,9 @@ public class LunchMenuServiceIMPL implements LunchMenuService {
         LunchMenu lunchMenu = lunchMenuRepository.findByDateNow(LocalDate.now());
 
         if(lunchMenu==null){
-            return null;
+            throw new BadRequestException("We dont have lunch menu for today!");
         }
+
         return modelMapper.map(lunchMenuRepository.findByDateNow(LocalDate.now()), LunchMenuViewDTO.class);
     }
 
@@ -54,18 +58,7 @@ public class LunchMenuServiceIMPL implements LunchMenuService {
     }
 
     @Override
-    public LunchMenuAddDTO getLunchMenuAddDto() {
-        LunchMenu lunchMenu = lunchMenuRepository.findByDateNow(LocalDate.now());
-
-        if(lunchMenu==null){
-            return new LunchMenuAddDTO();
-        }
-
-        return modelMapper.map(lunchMenu,LunchMenuAddDTO.class);
-    }
-
-    @Override
-    public List<LunchMenuViewDTO> getLunchHistory() {
+    public List<LunchMenuViewDTO> getOldLunchMenus() {
         return lunchMenuRepository.findAll().stream()
                 .map(lunchMenu->modelMapper.map(lunchMenu,LunchMenuViewDTO.class))
                 .filter(lunchMenu -> lunchMenu.getDateNow().isBefore(LocalDate.now()))
@@ -74,8 +67,14 @@ public class LunchMenuServiceIMPL implements LunchMenuService {
     }
 
     @Override
-    public void clearLunchMenuHistory() {
-        List<LunchMenu>lunchMenusForClean = lunchMenuRepository.findAll().stream().filter(lunchMenu -> lunchMenu.getDateNow().isBefore(LocalDate.now())).collect(Collectors.toList());
-        lunchMenuRepository.deleteAll(lunchMenusForClean);
+    public void changeStatus(String status) {
+        LunchMenu lunchMenu = lunchMenuRepository.findByDateNow(LocalDate.now());
+        if(lunchMenu == null){
+            throw new NoContentException("We dont have lunch menu for today!");
+        }
+
+        lunchMenu.setStatus(LunchMenuStatus.valueOf(status));
     }
+
+
 }

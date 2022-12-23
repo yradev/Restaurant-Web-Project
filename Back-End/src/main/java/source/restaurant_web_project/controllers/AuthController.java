@@ -43,35 +43,22 @@ public class AuthController {
 
     @PostMapping("register")
     public ResponseEntity<String> register(@RequestBody @Valid UserRegisterDTO userRegisterDTO) {
-        try {
-            authService.register(userRegisterDTO);
-            String accessToken = jwtUtil.generateAccessToken(userRegisterDTO.getPassword());
+        authService.register(userRegisterDTO);
+        String accessToken = jwtUtil.generateAccessToken(userRegisterDTO.getPassword());
 
-            return ResponseEntity.ok().body(accessToken);
-
-        } catch (BadCredentialsException ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        }
+        return ResponseEntity.ok().body(accessToken);
     }
 
     @PostMapping("reset-password/verification/send")
     public ResponseEntity<String> sendVerification(@RequestBody ChangePasswordVerificationSendDto changePasswordVerificationSendDto) {
-        try {
-            authService.sendVerifyMessage(changePasswordVerificationSendDto.getEmail(), changePasswordVerificationSendDto.getUrl());
+        authService.sendVerifyMessage(changePasswordVerificationSendDto.getEmail(), changePasswordVerificationSendDto.getUrl());
 
-            return ResponseEntity.ok().build();
-        } catch (BadCredentialsException exception) {
-            return ResponseEntity.badRequest().body(exception.getMessage());
-        }
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("reset-password/{email}")
     public ResponseEntity<String> resetPassword(@PathVariable String email, @RequestBody @Valid ResetPasswordDTO resetPasswordDTO) {
-        try {
-            authService.resetPassword(resetPasswordDTO.getToken(), email, resetPasswordDTO.getPassword());
-           return ResponseEntity.ok().build();
-        } catch (BadCredentialsException exception) {
-          return ResponseEntity.badRequest().body(exception.getMessage());
-        }
+        authService.resetPassword(resetPasswordDTO.getToken(), email, resetPasswordDTO.getPassword());
+        return ResponseEntity.ok().build();
     }
 }

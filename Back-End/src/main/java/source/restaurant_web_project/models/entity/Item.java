@@ -20,7 +20,7 @@ public class Item extends BaseEntity {
     @ManyToOne(targetEntity = Category.class, fetch = FetchType.EAGER)
     private Category category;
 
-    @ManyToMany(mappedBy = "items",targetEntity = Delivery.class)
+    @OneToMany(mappedBy = "item",targetEntity = DeliveryItem.class)
     private Set<Delivery> deliveries;
 
     public Item(){}

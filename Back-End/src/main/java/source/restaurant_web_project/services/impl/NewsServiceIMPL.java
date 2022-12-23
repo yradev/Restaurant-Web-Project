@@ -2,8 +2,10 @@ package source.restaurant_web_project.services.impl;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import source.restaurant_web_project.models.dto.AddNewNewsDTO;
-import source.restaurant_web_project.models.dto.view.NewsViewDTO;
+import source.restaurant_web_project.errors.NoContentException;
+import source.restaurant_web_project.errors.NotFoundException;
+import source.restaurant_web_project.models.dto.news.AddNewNewsDTO;
+import source.restaurant_web_project.models.dto.news.NewViewDTO;
 import source.restaurant_web_project.models.entity.News;
 import source.restaurant_web_project.models.entity.enums.NewsStatus;
 import source.restaurant_web_project.repositories.NewsRepository;
@@ -24,33 +26,47 @@ public class NewsServiceIMPL implements NewsService {
     }
 
     @Override
-    public void addNews(AddNewNewsDTO addNewNewsDTO) {
+    public long addNews(AddNewNewsDTO addNewNewsDTO) {
         News news = modelMapper.map(addNewNewsDTO,News.class);
         news.setNewsDate(LocalDate.now());
         news.setStatus(NewsStatus.ACTIVE);
         newsRepository.saveAndFlush(news);
+        return news.getId();
     }
 
     @Override
-    public List<NewsViewDTO> getActiveNews() {
-        return newsRepository.findByStatus(NewsStatus.ACTIVE).stream().map(news->modelMapper.map(news,NewsViewDTO.class)).collect(Collectors.toList());
+    public List<NewViewDTO> getActiveNews() {
+      List<NewViewDTO> news = newsRepository.findByStatus(NewsStatus.ACTIVE).stream()
+              .map(a -> modelMapper.map(a, NewViewDTO.class))
+              .toList();
+
+      if(news.isEmpty()){
+          throw new NoContentException();
+      }
+
+      return news;
+
     }
 
     @Override
-    public void deleteNews(int id) {
+    public NewViewDTO getNew(long id){
+        News news = newsRepository.findById(id);
+        if(news == null){
+            throw new NotFoundException("We dont have new with this id!");
+        }
+        return new NewViewDTO();
+    }
+
+    @Override
+    public void deleteNews(long id) {
         newsRepository.delete(newsRepository.findById(id));
     }
 
     @Override
-    public List<NewsViewDTO> getHistoryNews() {
+    public List<NewViewDTO> getHistoryNews() {
         return newsRepository.findByStatus(NewsStatus.CLOSED)
                 .stream()
-                .map(news->modelMapper.map(news,NewsViewDTO.class))
+                .map(news->modelMapper.map(news, NewViewDTO.class))
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public void clearHistory() {
-        newsRepository.deleteAll(newsRepository.findAll().stream().filter(news->news.getStatus().equals(NewsStatus.CLOSED)).collect(Collectors.toList()));
     }
 }

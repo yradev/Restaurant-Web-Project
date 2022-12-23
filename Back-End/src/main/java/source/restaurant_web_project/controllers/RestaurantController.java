@@ -17,14 +17,14 @@ public class RestaurantController {
         this.restaurantConfiguration = restaurantConfiguration;
     }
 
-    @GetMapping("get-data")
+    @GetMapping()
     public ResponseEntity<RestaurantConfigurationDTO>getRestaurantInformation(){
         RestaurantConfigurationDTO restaurantConfigurationDTO = restaurantConfiguration.getData();
 
         return ResponseEntity.ok(restaurantConfigurationDTO);
     }
 
-    @PutMapping("edit-data")
+    @PutMapping()
     public ResponseEntity<RestaurantConfigurationDTO>editRestaurantInformation(@RequestBody @Valid RestaurantConfigurationDTO restaurantConfigurationDTO){
         restaurantConfiguration.edit(restaurantConfigurationDTO);
         return ResponseEntity.ok().build();

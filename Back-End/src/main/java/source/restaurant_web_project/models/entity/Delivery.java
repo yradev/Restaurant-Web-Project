@@ -6,6 +6,7 @@ import source.restaurant_web_project.models.entity.superClass.BaseEntity;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -14,19 +15,13 @@ public class Delivery extends BaseEntity {
     private LocalDateTime receiveTime;
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status;
-    private String comment;
     private BigDecimal totalPrice;
-    private boolean active;
 
     @ManyToOne(targetEntity = User.class)
     private User deliver;
 
-    @ManyToMany(targetEntity = Item.class)
-    @JoinTable(
-            name = "delivery_item",
-            joinColumns = @JoinColumn(name = "item_id",referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "delivery_id",referencedColumnName = "id"))
-    private Set<Item>items;
+    @OneToMany(targetEntity = DeliveryItem.class)
+    private Set<DeliveryItem> items;
 
     @OneToOne
     private Address address;
@@ -57,14 +52,6 @@ public class Delivery extends BaseEntity {
         this.deliver = deliver;
     }
 
-    public Set<Item> getItems() {
-        return items;
-    }
-
-    public void setItems(Set<Item> items) {
-        this.items = items;
-    }
-
     public Address getAddress() {
         return address;
     }
@@ -73,27 +60,19 @@ public class Delivery extends BaseEntity {
         this.address = address;
     }
 
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
     public BigDecimal getTotalPrice() {
         return totalPrice;
     }
 
     public void setTotalPrice(BigDecimal totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public Set<DeliveryItem> getItems() {
+        return items;
+    }
+
+    public void setItems(Set<DeliveryItem> items) {
+        this.items = items;
     }
 }

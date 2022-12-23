@@ -2,10 +2,14 @@ package source.restaurant_web_project.services.impl;
 
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
+import source.restaurant_web_project.controllers.ItemController;
+import source.restaurant_web_project.errors.BadRequestException;
+import source.restaurant_web_project.errors.ConflictException;
+import source.restaurant_web_project.errors.NotFoundException;
 import source.restaurant_web_project.models.dto.item.*;
-import source.restaurant_web_project.models.dto.view.CategoryViewDTO;
-import source.restaurant_web_project.models.dto.view.ItemViewDTO;
+import source.restaurant_web_project.models.dto.item.ItemViewDTO;
 import source.restaurant_web_project.models.entity.Category;
 import source.restaurant_web_project.models.entity.Item;
 import source.restaurant_web_project.repositories.CategoryRepository;
@@ -13,9 +17,10 @@ import source.restaurant_web_project.repositories.ItemRepository;
 import source.restaurant_web_project.repositories.LunchMenuRepository;
 import source.restaurant_web_project.services.ItemService;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 public class ItemServiceIMPL implements ItemService {
@@ -32,142 +37,96 @@ public class ItemServiceIMPL implements ItemService {
     }
 
 
-        @Override
-    public List<Category> getCategories() {
-        return categoryRepository.findAll();
-    }
-
     @Override
-    public Category findCategory(String name) {
-        return categoryRepository.findCategoryByName(name);
-    }
+    public String addItem(ItemControlDTO itemControlDTO) {
+        Item item = modelMapper.map(itemControlDTO,Item.class);
+        Category category = categoryRepository.findCategoryByName(itemControlDTO.getCategory());
 
-    @Override
-    public void addCategory(CategoryAddDTO categoryAddDTO) {
-        Category category = modelMapper.map(categoryAddDTO,Category.class);
-        category.setPosition(categoryRepository.count()+1 );
-        categoryRepository.save(category);
-    }
-
-    @Override
-    public void editCategory(CategoryEditDTO categoryEditDTO) {
-        Category category = categoryRepository.findCategoryByName(categoryEditDTO.getCurrentName());
-
-        if(categoryEditDTO.getPosition()>0 && category.getPosition()!= categoryEditDTO.getPosition()){
-            long oldCategoryPositionID = category.getPosition();
-            long newCategoryPositionID = categoryEditDTO.getPosition();
-
-            Category category2 = categoryRepository.findCategoryByPosition(newCategoryPositionID);
-            category2.setPosition(oldCategoryPositionID);
-            categoryRepository.save(category2);
+        if(category == null){
+            throw new NotFoundException("We dont have category with this name!");
         }
 
-        modelMapper.getConfiguration().setPropertyCondition(Conditions.and(a->a.getSource()!=null,a->!a.getSource().equals("") && !a.getSource().toString().equals("0")));
-        modelMapper.map(categoryEditDTO,category);
-        categoryRepository.saveAndFlush(category);
-    }
+        if(itemRepository.findItemByName(itemControlDTO.getName())!=null){
+            throw new ConflictException("We have item with this name!");
+        }
 
-    @Override
-    public List<Item> getItemsByCategory(String categoryName) {
-        return itemRepository.findAll().stream().filter(item -> !item.getName().equals("Lunch menu") && item.getCategory().getName().equals(categoryName)).collect(Collectors.toList());
-    }
-
-    @Override
-    public void addItem(ItemAddDTO itemAddDTO) {
-        long itemCount = itemRepository.findItemsByCategory_Name(itemAddDTO.getCategoryName()).size();
-        itemAddDTO.setPosition(itemCount+1);
-        Item item = modelMapper.map(itemAddDTO,Item.class);
-        item.setCategory(categoryRepository.findCategoryByName(itemAddDTO.getCategoryName()));
+        item.setCategory(category);
         itemRepository.save(item);
-    }
 
-
-    @Override
-    public void deleteCategory(String name) {
-        Category currentCategory = categoryRepository.findCategoryByName(name);
-        long categoryLastPosition = currentCategory.getPosition() - 1;
-        categoryRepository.delete(currentCategory);
-
-        categoryRepository.saveAllAndFlush(categoryRepository.findAll().stream()
-                .filter(category -> category.getPosition()>categoryLastPosition)
-                .peek(a->a.setPosition(categoryLastPosition+1))
-                .collect(Collectors.toList()));
+        return item.getName();
     }
 
     @Override
-    public void deleteItem(String itemName,String categoryName) {
+    public void deleteItem(String itemName) {
         Item currentItem = itemRepository.findItemByName(itemName);
 
-        long itemBeforePosition = currentItem.getPosition()-1;
+        if(itemName==null){
+            throw new NotFoundException("We dont have item with this name!");
+        }
 
         itemRepository.delete(currentItem);
 
-        Category currentCategory = categoryRepository.findCategoryByName(categoryName);
-
-        currentCategory.getItems().stream()
-                .filter(item -> item.getPosition()>itemBeforePosition)
-                .forEach(item -> item.setPosition(itemBeforePosition+1));
-
-       categoryRepository.save(currentCategory);
-
     }
 
     @Override
-    public void editItem(ItemEditDTO itemEditDTO) {
-        boolean isCategoryChanged = false;
-        Item currentItem = itemRepository.findItemByName(itemEditDTO.getCurrentItemName());
+    public void editItem(String itemName, ItemControlDTO itemControlDTO) {
+        Item currentItem = itemRepository.findItemByName(itemName);
 
-        if(itemEditDTO.getPosition()!=0){
-            Item oldPositionItem = itemRepository.findItemsByCategory_Name(itemEditDTO.getCurrentCategory()).stream()
-                    .filter(item->item.getPosition()==itemEditDTO.getPosition())
-                    .findFirst()
-                    .orElse(null);
+        if(currentItem==null){
+            throw new NotFoundException("We dont have item with this name!");
+        }
 
-            oldPositionItem.setPosition(currentItem.getPosition());
-            itemRepository.saveAndFlush(oldPositionItem);
+        if(!itemName.equals(itemControlDTO.getName()) && itemControlDTO.getName()!=null){
+            if(itemRepository.findItemByName(itemControlDTO.getName())!=null){
+                throw new ConflictException("We have item with this name!");
+            }
         }
 
         modelMapper.getConfiguration().setPropertyCondition(Conditions.and(a->a.getSource()!=null,a->!a.getSource().equals("") && !a.getSource().toString().equals("0")));
-        modelMapper.map(itemEditDTO,currentItem);
-        if(!itemEditDTO.getCategory().equals("0")){
-            currentItem.setCategory(categoryRepository.findCategoryByName(itemEditDTO.getCategory()));
-            currentItem.setPosition(categoryRepository.findCategoryByName(itemEditDTO.getCategory()).getItems().size()+1);
-            isCategoryChanged=true;
-        }
+
+        modelMapper.map(itemControlDTO,currentItem);
+
         itemRepository.saveAndFlush(currentItem);
+    }
 
-        if(isCategoryChanged){
-            long oldPosition = itemEditDTO.getPosition()-1;
-           Category oldCategory = categoryRepository.findCategoryByName(itemEditDTO.getCurrentCategory());
-           oldCategory.getItems().stream()
-                   .filter(item->item.getPosition()>oldPosition)
-                   .forEach(item->item.setPosition(item.getPosition()-1));
-           categoryRepository.saveAndFlush(oldCategory);
+    @Override
+    public ItemViewDTO findItem(String name) {
+        Item item = itemRepository.findItemByName(name);
+        if(item==null){
+            throw new NotFoundException("We dont have item with this name!");
         }
+        return modelMapper.map(item,ItemViewDTO.class);
     }
 
     @Override
-    public Item findItem(String name) {
-        return itemRepository.findItemByName(name);
+    public ItemsByCategoryViewDTO findItemsByCategory(long pageId, String categoryName) {
+        Category category = categoryRepository.findCategoryByName(categoryName);
+        if(category==null){
+            throw new NotFoundException("We dont have category with this name!");
+        }
+
+        long totalEntities = category.getItems().size();
+        long totalPages = totalEntities == 0 ? 1 : Math.round(Math.ceil((double) totalEntities / 10));
+
+
+        ItemsByCategoryViewDTO itemsByCategoryViewDTO = new ItemsByCategoryViewDTO(pageId,totalPages,totalEntities,categoryName);
+
+        List<ItemViewDTO>items = category.getItems().stream()
+                .map(a->modelMapper.map(a,ItemViewDTO.class))
+                .toList();
+
+        itemsByCategoryViewDTO.setItems(items);
+
+        if (pageId > 1 && totalPages >= pageId) {
+            itemsByCategoryViewDTO.add(linkTo(methodOn(ItemController.class).findItemsByCategory(categoryName,pageId - 1)).withRel("Past pageId"));
+        }
+
+        if (totalPages > pageId) {
+            itemsByCategoryViewDTO.add(linkTo(methodOn(ItemController.class).findItemsByCategory(categoryName,pageId + 1)).withRel("Next pageId"));
+        }
+
+        return itemsByCategoryViewDTO;
     }
 
-    @Override
-    public List<CategoryViewDTO> getCategoryNameAndDescription() {
 
-        modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
-        return categoryRepository.findAll().stream()
-                .peek(category -> category.setName(category.getName()))
-                .sorted(Comparator.comparingLong(Category::getPosition))
-                .map(category -> modelMapper.map(category, CategoryViewDTO.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ItemViewDTO> getItemsView(String categoryName) {
-        modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
-        return itemRepository.findItemsByCategory_Name(categoryName).stream()
-                .sorted(Comparator.comparingLong(Item::getPosition))
-                .map(item -> modelMapper.map(item,ItemViewDTO.class))
-                .collect(Collectors.toList());
-    }
 }

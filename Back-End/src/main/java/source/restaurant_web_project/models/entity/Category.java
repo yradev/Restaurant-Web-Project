@@ -1,5 +1,6 @@
 package source.restaurant_web_project.models.entity;
 
+import org.springframework.hateoas.RepresentationModel;
 import source.restaurant_web_project.models.entity.superClass.BaseEntity;
 
 import javax.persistence.*;
@@ -10,7 +11,6 @@ import java.util.List;
 public class Category extends BaseEntity {
     @Column(unique = true)
     private String name;
-
     private long position;
     @OneToMany(mappedBy = "category", targetEntity = Item.class, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Item> items;

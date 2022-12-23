@@ -1,36 +1,20 @@
 package source.restaurant_web_project.services;
 
+import source.restaurant_web_project.models.dto.category.CategoryViewDTO;
 import source.restaurant_web_project.models.dto.item.*;
-import source.restaurant_web_project.models.dto.view.CategoryViewDTO;
-import source.restaurant_web_project.models.dto.view.ItemViewDTO;
-import source.restaurant_web_project.models.entity.Category;
+import source.restaurant_web_project.models.dto.item.ItemViewDTO;
 import source.restaurant_web_project.models.entity.Item;
 
 import java.util.List;
 
 public interface ItemService {
-    List<Category> getCategories();
+    String addItem(ItemControlDTO itemAddDTO);
 
-    Category findCategory(String name);
+    void deleteItem(String itemName);
 
-    void addCategory(CategoryAddDTO categoryAddDTO);
+    void editItem(String itemName, ItemControlDTO itemControlDTO);
 
-    void editCategory(CategoryEditDTO categoryEditDTO);
+    ItemViewDTO findItem(String name);
 
-    void deleteCategory(String name);
-
-    List<Item> getItemsByCategory(String categoryName);
-
-    void addItem(ItemAddDTO itemAddDTO);
-
-    void deleteItem(String itemName, String categoryName);
-
-    void editItem(ItemEditDTO itemEditDTO);
-
-    Item findItem(String name);
-
-    List<CategoryViewDTO> getCategoryNameAndDescription();
-
-    List<ItemViewDTO> getItemsView(String categoryName);
-
+    ItemsByCategoryViewDTO findItemsByCategory(long page,String categoryName);
 }

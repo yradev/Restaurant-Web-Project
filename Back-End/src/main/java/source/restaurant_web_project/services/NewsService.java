@@ -1,18 +1,18 @@
 package source.restaurant_web_project.services;
 
-import source.restaurant_web_project.models.dto.AddNewNewsDTO;
-import source.restaurant_web_project.models.dto.view.NewsViewDTO;
+import source.restaurant_web_project.models.dto.news.AddNewNewsDTO;
+import source.restaurant_web_project.models.dto.news.NewViewDTO;
 
 import java.util.List;
 
 public interface NewsService {
-    void addNews(AddNewNewsDTO addNewNewsDTO);
+    long addNews(AddNewNewsDTO addNewNewsDTO);
 
-    List<NewsViewDTO> getActiveNews();
+    List<NewViewDTO> getActiveNews();
 
-    void deleteNews(int id);
+    NewViewDTO getNew(long id);
 
-    List<NewsViewDTO> getHistoryNews();
+    void deleteNews(long id);
 
-    void clearHistory();
+    List<NewViewDTO> getHistoryNews();
 }

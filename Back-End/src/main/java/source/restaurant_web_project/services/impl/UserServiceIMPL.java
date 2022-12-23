@@ -6,6 +6,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import source.restaurant_web_project.errors.ConflictException;
+import source.restaurant_web_project.errors.NotFoundException;
 import source.restaurant_web_project.models.dto.user.*;
 import source.restaurant_web_project.models.entity.Address;
 import source.restaurant_web_project.models.entity.Role;
@@ -37,14 +39,14 @@ public class UserServiceIMPL implements UserService {
 
 
     @Override
-    public UserDataSendDTO getUserData(String email) {
+    public UserDataViewDTO getUserData(String email) {
         User user = userRepository.findUserByEmail(email);
 
         if(user==null){
-            throw new BadCredentialsException("We dont have user with this email!");
+            throw new NotFoundException("We dont have user with this email!");
         }
 
-        return modelMapper.map(user, UserDataSendDTO.class);
+        return modelMapper.map(user, UserDataViewDTO.class);
     }
 
     @Override
@@ -53,7 +55,7 @@ public class UserServiceIMPL implements UserService {
 
         if (!currUser.getEmail().equals(userEditDTO.getEmail()) && userEditDTO.getEmail()!=null) {
             if (userRepository.findUserByEmail(userEditDTO.getEmail()) != null) {
-                throw new BadCredentialsException("We have user with this email!");
+                throw new ConflictException("We have user with this email!");
             }
         }
 
@@ -96,19 +98,19 @@ public class UserServiceIMPL implements UserService {
         User user = userRepository.findUserByEmail(email);
 
         if(user == null){
-            throw new BadCredentialsException("We dont have user with this email!");
+            throw new NotFoundException("We dont have user with this email!");
         }
 
         List<RoleDTO> roleDTOS = userControlDTO.getRoles();
 
         if(roleDTOS == null || roleDTOS.stream().noneMatch(a->a.getName().equals("ROLE_USER"))){
-            throw new BadCredentialsException("We must have user role!");
+            throw new ConflictException("We must have user role!");
         }
 
         List<Role> roles = userControlDTO.getRoles().stream().map(a -> {
             Role role = roleRepository.findByName(a.getName());
             if (role == null) {
-                throw new BadCredentialsException(String.format("We dont have role with name %s !",a.getName()));
+                throw new NotFoundException(String.format("We dont have role with name %s !",a.getName()));
             }
 
             return role;
@@ -135,7 +137,7 @@ public class UserServiceIMPL implements UserService {
         User user = userRepository.findUserByEmail(email);
 
         if(user==null){
-            throw new BadCredentialsException("We dont have user with this email!");
+            throw new NotFoundException("We dont have user with this email!");
         }
 
         UserControlDTO userControlDTO = new UserControlDTO();modelMapper.map(user,userControlDTO);

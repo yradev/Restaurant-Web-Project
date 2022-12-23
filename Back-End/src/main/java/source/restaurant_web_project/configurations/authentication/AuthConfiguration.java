@@ -45,6 +45,10 @@ public class AuthConfiguration {
         http.authorizeRequests()
                 .antMatchers("/auth/**").anonymous()
                 .antMatchers("/core/**").hasRole("OWNER")
+                .antMatchers("/categories/**").anonymous()
+                .antMatchers("/items/**").anonymous()
+                .antMatchers("/lunch-menu/**").anonymous()
+                .antMatchers("/news/**").anonymous()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);

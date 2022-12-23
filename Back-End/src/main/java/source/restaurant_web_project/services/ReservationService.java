@@ -1,22 +1,19 @@
 package source.restaurant_web_project.services;
 
-import source.restaurant_web_project.models.dto.NewReservationDTO;
-import source.restaurant_web_project.models.dto.view.ReservationViewDTO;
+import source.restaurant_web_project.models.dto.reservation.NewReservationDTO;
+import source.restaurant_web_project.models.dto.reservation.ReservationViewDTO;
 
 import java.util.List;
-import java.util.Map;
 
 public interface ReservationService {
-    void reserve(NewReservationDTO newReservationDTO, String name);
+    long reserve(NewReservationDTO newReservationDTO);
 
-    List<ReservationViewDTO> getCurrentUserReservations(String username);
-
-    void deleteReservation(long reservationId);
+    List<ReservationViewDTO> getReservationsForAuthenticatedUser();
 
     List<ReservationViewDTO> getStaffReservations();
 
-    Map<String, Integer> getSizeOfActiveReservations();
-
     void changeReservationStatus(long reservationId, String status);
+
+    ReservationViewDTO getReservation(long id);
 
 }

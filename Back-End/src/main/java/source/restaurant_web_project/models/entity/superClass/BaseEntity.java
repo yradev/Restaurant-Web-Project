@@ -1,12 +1,15 @@
 package source.restaurant_web_project.models.entity.superClass;
 
+
+import org.springframework.hateoas.RepresentationModel;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public abstract class BaseEntity {
+public abstract class BaseEntity extends RepresentationModel<BaseEntity> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

@@ -11,7 +11,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
-import source.restaurant_web_project.errors.DisabledUserException;
+import source.restaurant_web_project.errors.BadRequestException;
+import source.restaurant_web_project.errors.ConflictException;
+import source.restaurant_web_project.errors.NotFoundException;
+import source.restaurant_web_project.errors.UnauthorizedException;
 import source.restaurant_web_project.repositories.RestaurantConfigurationRepository;
 import source.restaurant_web_project.models.dto.authentication.UserRegisterDTO;
 import source.restaurant_web_project.models.entity.Role;
@@ -56,11 +59,11 @@ public class AuthServiceIMPL implements AuthService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findUserByEmail(username);
         if (user == null) {
-            throw new UsernameNotFoundException("Username not found!");
+            throw new NotFoundException("Username not found!");
         }
 
         if (!user.isEnabled()) {
-            throw new DisabledUserException("User is disabled!");
+            throw new UnauthorizedException("User is disabled!");
         }
 
         return new org.springframework.security.core.userdetails.User(
@@ -87,7 +90,7 @@ public class AuthServiceIMPL implements AuthService {
         User user = modelMapper.map(userRegisterDTO, User.class);
 
         if (userRepository.findUserByEmail(user.getEmail()) != null) {
-            throw new BadCredentialsException("We have user with this email!");
+            throw new ConflictException("We have user with this email!");
         }
 
         user.setAddress(new ArrayList<>());
@@ -109,7 +112,7 @@ public class AuthServiceIMPL implements AuthService {
     @Override
     public void sendVerifyMessage(String email, String url) {
         if(userRepository.findUserByEmail(email)==null){
-            throw new BadCredentialsException(String.format("We dont have user with email %s!",email));
+            throw new NotFoundException(String.format("We dont have user with email %s!",email));
         }
 
         Token passwordChangeToken = tokenRepository.findPasswordResetTokenByEmail(email);
@@ -118,7 +121,7 @@ public class AuthServiceIMPL implements AuthService {
             if (LocalDateTime.now().isAfter(passwordChangeToken.getExpiryDate())) {
                 tokenRepository.delete(passwordChangeToken);
             }else{
-                throw new BadCredentialsException("We have active token!");
+                throw new ConflictException("We have active token!");
             }
         }
 
@@ -153,12 +156,12 @@ public class AuthServiceIMPL implements AuthService {
         Token currToken = tokenRepository.findPasswordResetTokenByEmailAndToken(email, token);
 
         if(currToken==null){
-            throw new BadCredentialsException("Invalid token!");
+            throw new BadRequestException("Invalid token!");
         }
 
         if (LocalDateTime.now().isAfter(currToken.getExpiryDate())) {
             tokenRepository.delete(currToken);
-            throw new BadCredentialsException("Invalid token!");
+            throw new BadRequestException("Invalid token!");
         }
 
         String encrPassword = bCryptPasswordEncoder.encode(password);
@@ -166,7 +169,7 @@ public class AuthServiceIMPL implements AuthService {
         User user = userRepository.findUserByEmail(email);
 
         if(user==null){
-            throw new BadCredentialsException(String.format("User with email %s doesnt exist!",email));
+            throw new NotFoundException(String.format("User with email %s doesnt exist!",email));
         }
         user.setPassword(encrPassword);
         userRepository.save(user);
